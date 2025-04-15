@@ -927,6 +927,7 @@ production stylesheet in assets/built/screen.css
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-bottom: 12px;
     color: var(--color-secondary-text);
     font-size: 1.4rem;
     font-weight: 600;
