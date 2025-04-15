@@ -1,5 +1,4 @@
 ---
-: 66fa88aed555c50139303eb6
 layout: post
 published: false
 title: Art requires a context
