@@ -13,7 +13,7 @@ class: post-template
         {% if page.tags.size > 0 %}
           {% for tag in page.tags %}
           <span class="post-card-tag">
-            <a href="{{ site.baseurl }}tags/{{ tag | slugify: "latin" }}/">{{tag | capitalize}}</a>
+            <a href="{{ site.baseurl }}tags/{{ tag | slugify: "latin" }}">{{tag | capitalize}}</a>
           </span>
           {% if forloop.index < page.tags.size %}&bull;{% endif %}
           {% endfor %}
