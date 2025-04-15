@@ -3,7 +3,7 @@
 
   {% include head.html %}
 
-  <body class="{% if paginator.page > 1 %}paged archive-template{% elsif page.class %}{{ page.class }}{% else %}home-template{% endif %}
+  <body class="{% if paginator.page > 1 %}paged archive-template{% elsif page.class %}{{ page.class }}{% else %}page-template{% endif %}
                 is-head-{% if site.navigation_layout == 'Logo on cover' %}left-logo{% elsif site.navigation_layout == 'Logo in the middle' %}middle-logo{% else %}stacked{% endif %}
                 {% if site.title_font == 'Elegant serif' %} has-serif-title{% endif %}{% if site.body_font == 'Modern sans-serif' %} has-sans-body{% endif %}
                 {% if site.cover or page.cover %} has-cover {% endif %}">

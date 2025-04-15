@@ -926,8 +926,7 @@ production stylesheet in assets/built/screen.css
 .post-card-tags {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 0 0 10px;
+    gap: 6px;
     color: var(--color-secondary-text);
     font-size: 1.4rem;
     font-weight: 600;
@@ -1209,7 +1208,6 @@ html.no-infinite-scroll .pagination {
 }
 
 .article-tag {
-    margin-bottom: 16px;
     font-size: 1.6rem;
 }
 
@@ -1872,6 +1870,8 @@ iframe.instagram-media + script + :not([id]) {
 
 .author-profile-footer {
     margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .author-profile-location {

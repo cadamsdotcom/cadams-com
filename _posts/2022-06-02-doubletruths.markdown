@@ -2,6 +2,7 @@
 date: '2022-06-02 08:47:01'
 layout: post
 title: Doubletruths
+cover: assets/images/2022/06/285329684_10166716954440601_8908859846128079495_n.jpeg
 author: cadams
 tags: [philosophy]
 ---

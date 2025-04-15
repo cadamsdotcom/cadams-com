@@ -2,6 +2,7 @@
 date: '2024-08-05 05:04:34'
 layout: post
 title: Creating VeggieBrain
+cover: assets/images/2024/08/VeggieBrain-Feature-Image.png
 author: cadams
 tags: [technology]
 ---

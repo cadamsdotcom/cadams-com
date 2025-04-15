@@ -2,6 +2,7 @@
 date: '2024-11-11 04:50:24'
 layout: post
 title: LLMs are like pizza, and that's OK
+cover: assets/images/2024/11/pizza.jpg
 author: cadams
 tags: [technology]
 ---

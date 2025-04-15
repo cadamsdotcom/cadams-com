@@ -18,6 +18,9 @@ color_scheme: "Auto"
 language: 'en-uk'
 navigation_layout: "Logo on cover"
 
+posthog_analytics: hc_HJgbUvZgP8Ftl7KsWvhu1eIDrL7QXn0wRCNksrveJuU
+comments: True
+
 # gems and other configs
 plugins: 
   - jekyll-feed

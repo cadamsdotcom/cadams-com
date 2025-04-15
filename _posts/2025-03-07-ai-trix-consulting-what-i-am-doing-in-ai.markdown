@@ -2,6 +2,7 @@
 date: '2025-03-07 05:49:22'
 layout: post
 title: Launching AI Trix Consulting
+cover: assets/images/2025/03/AI-Trix-Blog-Logo.jpg
 author: cadams
 tags: [technology]
 ---

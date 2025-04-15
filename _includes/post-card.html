@@ -16,7 +16,10 @@
       <header class="post-card-header">
         <div class="post-card-tags">
           {% if post.tags.size > 0 %}
-            <span class="post-card-primary-tag">{{ post.tags | first | capitalize }}</span>
+            {% for tag in post.tags %}
+              <span class="post-card-tag">{{ tag | capitalize }}</span>
+              {% if forloop.index < post.tags.size %}&bull;{% endif %}
+            {% endfor %}
           {% endif %}
           {% if post.featured %}
             <span class="post-card-featured">{% include icons/fire.html %} Featured</span>

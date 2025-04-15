@@ -29,13 +29,16 @@ layout: default
         <div class="post-card-content">
           <div class="post-card-content-link">
             <header class="post-card-header">
-              <h2 class="post-card-title">{{ page.tag | default: page.name }}</h2>
+              <h2 class="post-card-title">{{ page.name | default: page.tag }}</h2>
             </header>
             <div class="post-card-excerpt">
               {% if page.description %}
                 {{ page.description }}
-              {% elsif page.tag %}
-                A collection of {{ filtered_posts.size }} posts
+              {% endif %}
+            </div>
+            <div class="post-card-excerpt">
+              {% if page.tag %}
+                A collection of {{ filtered_posts.size }} posts.
               {% endif %}
             </div>
           </div>

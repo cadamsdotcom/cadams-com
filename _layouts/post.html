@@ -2,7 +2,6 @@
 layout: default
 current: post
 class: post-template
-disqus: false
 ---
 
 <main id="site-main" class="site-main">
@@ -13,11 +12,10 @@ disqus: false
       <div class="article-tag post-card-tags">
         {% if page.tags.size > 0 %}
           {% for tag in page.tags %}
-            {% if forloop.first %}
-              <span class="post-card-primary-tag">
-                <a href="{{ site.baseurl }}tags/{{ tag | slugify: "latin" }}/">{{tag | capitalize}}</a>
-              </span>
-            {% endif %}
+          <span class="post-card-tag">
+            <a href="{{ site.baseurl }}tags/{{ tag | slugify: "latin" }}/">{{tag | capitalize}}</a>
+          </span>
+          {% if forloop.index < page.tags.size %}&bull;{% endif %}
           {% endfor %}
         {% endif %}
         {% if page.featured %}
@@ -108,6 +106,13 @@ disqus: false
 
       {{content}}
     </section>
+
+    {% if site.comments and page.hacker_news_id %}
+        <section class="gh-content comments">
+            <p>To discuss the article, comment on <a href="https://news.ycombinator.com/item?id={{ page.hacker_news_id }}" target="_blank" rel="noopener">Hacker News</a>.</p>
+            <div id="hacker-news-comments" class="hacker-news-comments">Loading comments from Hacker News...</div>
+        </section>
+    {% endif %}
   </article>
 </main>
 

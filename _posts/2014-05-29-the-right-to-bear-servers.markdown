@@ -2,6 +2,7 @@
 date: '2014-05-29 00:00:00'
 layout: post
 title: Demanding the right to "bear servers"
+cover: assets/images/2022/05/853724_raising-the-flag-on-iwo-jima-wallpaper-joe-rosenthal-photography_1920x1200_h_o.jpeg
 author: cadams
 tags: [technology, philosophy]
 ---

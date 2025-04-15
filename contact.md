@@ -2,7 +2,7 @@
 date: '2022-05-27 04:09:45'
 layout: page
 title: Contact
-class: 'page-template'
+class: page-template
 ---
 Hi! Hopefully you already know all [about me](__GHOST_URL__/about)!
 Assuming you've read all of that, here is how to reach me:

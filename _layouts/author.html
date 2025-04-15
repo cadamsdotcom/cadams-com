@@ -34,19 +34,19 @@ layout: default
               {% endif %}
               <div class="author-profile-meta">
                 {%if page.website %}
-                  <a class="author-profile-social-link" href="{{page.website}}" target="_blank" rel="noopener">{{page.website}}</a>
+                  <a class="author-profile-social-link" href="{{page.website}}" target="_blank" rel="noopener">{% include icons/website.html %}</a>
                 {% endif %}
-                {%if page.twitter_url %}
-                  <a class="author-profile-social-link" href="{{page.twitter_url}}" target="_blank" rel="noopener">{% include icons/twitter.html %}</a>
+                {%if page.twitter %}
+                  <a class="author-profile-social-link" href="https://twitter.com/{{page.twitter}}" target="_blank" rel="noopener">{% include icons/twitter.html %}</a>
                 {% endif %}
-                {%if page.facebook_url %}
-                  <a class="author-profile-social-link" href="{{page.facebook_url}}" target="_blank" rel="noopener">{% include icons/facebook.html %}</a>
+                {%if page.facebook %}
+                  <a class="author-profile-social-link" href="https://facebook.com/{{page.facebook}}" target="_blank" rel="noopener">{% include icons/facebook.html %}</a>
                 {% endif %}
-
-                {% if page.location %}
-                  <div class="author-location">{{ page.location }}
-                    <span class="bull">&bull;</span>
-                  </div>
+                {%if page.github %}
+                  <a class="author-profile-social-link" href="https://github.com/{{page.github}}" target="_blank" rel="noopener">{% include icons/github.html %}</a>
+                {% endif %}
+                {%if page.linkedin %}
+                  <a class="author-profile-social-link" href="https://linkedin.com/in/{{page.linkedin}}" target="_blank" rel="noopener">{% include icons/linkedin.html %}</a>
                 {% endif %}
               </div>
             </footer>

@@ -2,6 +2,7 @@
 date: '2024-10-25 06:55:21'
 layout: post
 title: Counting Bondi Salties swimmers with a little help from AI
+cover: assets/images/size/w2000/2024/09/Cropped-HowManySwimmers.jpeg
 author: cadams
 tags: [technology]
 ---
