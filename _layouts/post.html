@@ -2,210 +2,125 @@
 layout: default
 current: post
 class: post-template
+disqus: false
 ---
 
-{% assign words_per_minute = site.words_per_minute | default: 200 %}
-{% assign words = page.content | strip_html | number_of_words %}
+<main id="site-main" class="site-main">
+  <article class="article {{page.class}} {% if page.post_image_style == 'Full' %}image-full{% elsif page.post_image_style == 'Small' %}image-small{% endif %}">
 
-<!-- default -->
+    <header class="article-header gh-canvas">
 
-<!-- The tag above means: insert everything in this file
-into the {body} of the default.hbs template -->
+      <div class="article-tag post-card-tags">
+        {% if page.tags.size > 0 %}
+          {% for tag in page.tags %}
+            {% if forloop.first %}
+              <span class="post-card-primary-tag">
+                <a href="{{ site.baseurl }}tags/{{ tag | slugify: "latin" }}/">{{tag | capitalize}}</a>
+              </span>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if page.featured %}
+          <span class="post-card-featured">{% include rss.html %} Featured</span>
+        {% endif %}
+      </div>
 
-<header class="site-header outer">
-    <div class="inner">
-        {% include site-nav.html %}
-    </div>
-</header>
+      <h1 class="article-title">{{page.title}}</h1>
 
-<!-- Everything inside the #post tags pulls data from the post -->
-<!-- #post -->
+      {% if page.custom_excerpt %}
+        <p class="article-excerpt">{{page.custom_excerpt}}</p>
+      {% endif %}
 
-<main id="site-main" class="site-main outer" role="main">
-    <div class="inner">
+      <div class="article-byline">
+        <section class="article-byline-content">
 
-        <article class="post-full {% if page.tags.size > 0 %}{% for tag in page.tags %} tag-{{ tag | slugify: "latin" }}{% endfor %}{% endif %} {{ page.subclass }} {% unless page.cover %}no-image{% endunless %}">
+          {% if page.author.size  > 0 %}
+            <ul class="author-list">
+              {% for author in site.authors %}
 
-            <header class="post-full-header">
-                <h1 class="post-full-title">{{ page.title }}</h1>
-                {% for author in site.data.authors %}
-                    {% if author[1].username == page.author %}
-                        <section class="author-card">
-                            {% if author[1].picture %}
-                                <a href="/author/{{ page.author }}/" aria-label="Read more of {{ author[1].name }}">
-                                    <img class="author-profile-image" src="{{ site.baseurl }}{{ author[1].picture }}" alt="{{ page.author }}" />
-                                </a>
-                            {% endif %}
-                            <section class="author-card-content">
-                                <h4 class="author-card-name">
-                                    <a href="{{ site.baseurl }}author/{{ page.author }}" aria-label="Read more of {{ author[1].name }}">{{ author[1].name }}</a>
-                                </h4>
-                                <p>
-                                    <time datetime="{{ page.date | date:'%0e %B %Y' }}">{{ page.date | date:'%0e %B %Y' }}</time>
-                                    <span class="byline-reading-time"><span class="bull">•</span>
-                                    {% if words <= words_per_minute %}
-                                        1 min read
-                                    {% else %}
-                                        {{ words | divided_by:words_per_minute }} min read
-                                    {% endif %}
-                                    </span>
-                                </p>
-
-                                {% if page.tags.size > 0 %}
-                                    <p>
-                                        {% for tag in page.tags %}
-                                            {% if forloop.index == page.tags.size %}
-                                                <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | capitalize }}</a>
-                                                {% else %}
-                                                <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | capitalize }}</a>,
-                                            {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                {% endif %}
-                    
-    
-                            </section>
-                        </section>
+                {% if page.author contains author.username %}
+                  <li class="author-list-item">
+                    {% if author.picture %}
+                      <a href="{{ site.baseurl }}authors/{{ author.username }}" class="author-avatar">
+                        <img class="author-profile-image" src="{{ site.baseurl }}{{ author.picture }}" alt="{{ author.username }}">
+                      </a>
+                    {% else %}
+                      <a href="{{ site.baseurl }}authors/{{ author.username }}" class="author-avatar author-profile-image">{% include icons/avatar.html %}</a>
                     {% endif %}
-                {% endfor %}
-            </header>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endif %}
 
-            {% if page.cover %}
-            <figure class="post-full-image" style="background-image: url({{ site.baseurl }}{{ page.cover }})">
-            </figure>
-            {% endif %}
-
-            <section class="post-full-content">
-                <div class="kg-card-markdown">
-                    {{ content }}
-                </div>
-            </section>
-
-            <!-- Email subscribe form at the bottom of the page -->
-            {% if site.subscribers %}
-                <section class="subscribe-form">
-                    <h3 class="subscribe-form-title">Subscribe to {{ site.title }}</h3>
-                    <p>Get the latest posts delivered right to your inbox</p>
-                    {% include subscribe-form.html placeholder="youremail@example.com" %}
-                </section>
-            {% endif %}
-
-            <footer class="post-full-footer">
-                <!-- Everything inside the #author tags pulls data from the author -->
-                <!-- #author-->
-                {% for author in site.data.authors %}
-                    {% if author[1].username == page.author %}
-                        <section class="author-card">
-                            {% if author[1].picture %}
-                                <img class="author-profile-image" src="{{ site.baseurl }}{{ author[1].picture }}" alt="{{ page.author }}" />
-                            {% endif %}
-                            <section class="author-card-content">
-                                <h4 class="author-card-name"><a href="{{ site.baseurl }}author/{{ page.author }}">{{ author[1].name }}</a></h4>
-                                {% if author[1].bio %}
-                                    <p>{{ author[1].bio }}</p>
-                                {% else %}
-                                    <p>Read <a href="{{ site.baseurl }}author/{{ page.author }}">more posts</a> by this author.</p>
-                                {% endif %}
-                            </section>
-                        </section>
-                        <div class="post-full-footer-right">
-                            <a class="author-card-button" href="{{ site.baseurl }}author/{{ page.author }}">Read More</a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-                <!-- /author  -->
-            </footer>
-
-            <!-- If you use comments, just uncomment this block. -->
-            {% if site.comments and page.hacker_news_id %}
-                <section class="post-full-comments">
-                    <p>To contribute, post on <a href="https://news.ycombinator.com/item?id={{ page.hacker_news_id }}" target="_blank" rel="noopener">Hacker News</a>.</p>
-                    <div id="hacker-news-comments" class="hacker-news-comments">Loading comments from Hacker News...</div>
-                </section>
-            {% endif %}
-
-        </article>
-
-    </div>
-</main>
-
-<!-- Links to Previous/Next posts -->
-<aside class="read-next outer">
-    <div class="inner">
-        <div class="read-next-feed">
-            {% if page.tags.size > 0 %}
-                {% assign primary = page.tags | first %}
-                {% assign related_posts = 0 %}
-                {% for post in site.posts %}
-                  {% if post.tags.size > 0 %}
-                      {% if post.tags contains primary %}
-                        {% assign related_posts = related_posts | plus: 1 %}
-                      {% endif %}
+          <div class="article-byline-meta">
+            {% if page.author.size  > 0 %}
+              <h4 class="author-name">
+                {% for author in site.authors %}
+                  {% if page.author contains author.username %}
+                    <a href="{{ site.baseurl }}authors/{{ author.username }}">
+                      {{author.name}}
+                    </a>
+                    {% unless forloop.last %},{% endunless %}
                   {% endif %}
                 {% endfor %}
-                {% if related_posts > 1 %}
-                    <article class="read-next-card"
-                        {% if site.cover %}
-                            style="background-image: url({{ site.baseurl }}{{ site.cover }})"
-                        {% else %}
-                            {% if page.cover %}
-                                style="background-image: url(url({{ site.baseurl }}{{ page.cover }})"{% endif %}
-                        {% endif %}
-                    >
-                        <header class="read-next-card-header">
-                            <small class="read-next-card-header-sitetitle">&mdash; {{ site.title }} &mdash;</small>
-                            {% if primary %}
-                                <h3 class="read-next-card-header-title"><a href="{{ site.baseurl }}tag/{{ primary | slugify: "latin" }}/">{{ primary | capitalize }}</a></h3>
-                            {% endif %}
-                        </header>
-                        <div class="read-next-divider">{% include infinity.html %}</div>
-                        <div class="read-next-card-content">
-                            <ul>
-                                {% assign count = 0 %}
-                                {% for post in site.posts %}
-                                  {% if post.tags contains primary %}
-                                    {% if post.title != page.title %}
-                                        {% assign count = count | plus: 1 %}
-                                        {% if count <= 3 %}
-                                            <li><a href="{{ site.baseurl }}{{ post.url | remove_first: '/' }}">{{ post.title }}</a></li>
-                                        {% endif %}
-                                    {% endif %}
-                                  {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <footer class="read-next-card-footer">
-                            <a href="{{ site.baseurl }}tag/{{ primary | slugify: "latin" }}/">
-                                {% if related_posts > 1 %}
-                                    See all {{ related_posts | minus: 1 }} posts  →
-                                {% elsif related_posts == 1 %}
-                                    {{ related_posts }} post  →
-                                {% else %}
-                                    No posts.
-                                {% endif %}
-                            </a>
-                        </footer>
-                    </article>
+              </h4>
+            {% endif %}
+            <div class="byline-meta-content">
+              <time class="byline-meta-date" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date:'%e %B %Y' }}</time>
+              {% if page.reading_time %}
+                <span class="byline-reading-time">
+                  <span class="bull">&bull;</span>
+                  {{page.reading_time}}</span>
+              {% else %}
+                {% assign words_per_minute = site.words_per_minute | default: 200 %}
+                {% assign words = page.content | strip_html | number_of_words %}
+                {% if words <= words_per_minute %}
+                  <span class="byline-reading-time">
+                    <span class="bull">&bull;</span>
+                    1 min read</span>
+                {% else %}
+                  <span class="byline-reading-time">
+                    <span class="bull">&bull;</span>
+                    {{ words | divided_by:words_per_minute }} min read</span>
                 {% endif %}
-            {% endif %}
+              {% endif %}
+            </div>
+          </div>
 
-            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
-            {% if page.next %}
-                {% include post-card-next.html %}
-            {% endif %}
+        </section>
+      </div>
 
-            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
-            {% if page.previous %}
-                {% include post-card-previous.html %}
-            {% endif %}
+      {% if page.post_image_style != "Hidden" %}
+        {% if page.cover %}
+          <figure class="article-image">
+            <img src="{{ site.baseurl }}{{ page.cover }}" alt="{% if page.cover_alt %}{{page.cover_alt}}{% else %}{{page.title}}{% endif %}">
+            {% if page.cover_caption %}
+              <figcaption>{{page.cover_caption}}</figcaption>
+            {% endif  %}
+          </figure>
+        {% endif %}
+      {% endif %}
 
-        </div>
-    </div>
-</aside>
+    </header>
+    <section class="gh-content gh-canvas">
+      {% include custom-post-content.html %}
 
-<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
-{% include floating-header.html %}
+      {{content}}
+    </section>
+  </article>
+</main>
 
-<!-- /post -->
+{% if page.show_recent_posts_footer != false %}
 
-<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+  {% assign posts = paginator.posts | default: site.posts | where_exp: "item", "item.id != page.id" %}
+  {% if posts %}
+    <aside class="read-more-wrap outer">
+      <div class="read-more inner">
+        {% for post in posts limit: 3 %}
+          {% include post-card.html post=post %}
+        {% endfor %}
+      </div>
+    </aside>
+  {% endif %}
+{% endif %}

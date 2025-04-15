@@ -2,6 +2,8 @@
 date: '2022-05-25 07:44:39'
 layout: post
 title: '20-year high school reunion: a report.'
+author: cadams
+tags: [philosophy]
 ---
 > In late May, 2022, I headed to Melbourne for the 20 year reunion of my final year high school class.  
 >   

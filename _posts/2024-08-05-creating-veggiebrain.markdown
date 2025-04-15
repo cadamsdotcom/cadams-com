@@ -2,6 +2,8 @@
 date: '2024-08-05 05:04:34'
 layout: post
 title: Creating VeggieBrain
+author: cadams
+tags: [technology]
 ---
 Building with AI is rewarding: neat things can be done very quickly. [VeggieBrain](https://veggiebrain.vercel.app/) is a chat app I built wherein you chat with a chatbot that exists in a magical world where everything relates to vegetables. It was born as a response to a friend's project - my mate built [beefbrain.com](https://beefbrain.com/), similar but beef-related instead. BeefBrain uses vanilla CSS and JS and OpenAI's `gpt-3.5-turbo` model. Kudos to Ben, the bot does really well with that model - one may even say despite it!
 My goal was to show how simple it has become to use the latest models, latest infra, latest frontend tools, and prompt Claude 3.5 Sonnet to get as much of it done as possible.

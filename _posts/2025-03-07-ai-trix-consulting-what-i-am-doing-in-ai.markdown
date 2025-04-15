@@ -2,6 +2,8 @@
 date: '2025-03-07 05:49:22'
 layout: post
 title: Launching AI Trix Consulting
+author: cadams
+tags: [technology]
 ---
 I always aspired to be an entrepreneur. Have a successful business and make money myself, no paychecks in sight.
 Thanks to AI, I am taking my chance!

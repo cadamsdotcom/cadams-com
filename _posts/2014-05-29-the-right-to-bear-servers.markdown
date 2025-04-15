@@ -2,6 +2,8 @@
 date: '2014-05-29 00:00:00'
 layout: post
 title: Demanding the right to "bear servers"
+author: cadams
+tags: [technology, philosophy]
 ---
 > In the Wild West of the modern Internet, the people must be able to wield (ie. run) their own infrastructure.  
 >   

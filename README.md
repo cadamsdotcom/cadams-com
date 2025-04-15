@@ -1,114 +1,166 @@
-## Jasper2
+# Kaschber
 
-[![Build Status](https://github.com/jekyllt/jasper2/actions/workflows/jekyll_build.yml/badge.svg)](https://github.com/jekyllt/jasper2/actions/workflows/jekyll_build.yml)
-[![Ruby](https://img.shields.io/badge/ruby-2.6.3-blue.svg?style=flat)](http://travis-ci.org/jekyllt/jasper2)
-[![Jekyll](https://img.shields.io/badge/jekyll-3.9.0-blue.svg?style=flat)](http://travis-ci.org/jekyllt/jasper2)
+Kaschber is a Jekyll port for Ghost's default theme Casper [https://github.com/TryGhost/Casper](https://github.com/TryGhost/Casper). It's unopinionated and tries to stick as closely as possible to the Casper stylings and layout. It only comes with three pre-defined plugins: jekyll-feed, jekyll-paginate-v2 and jekyll-seo.
 
-This is a full-featured port of Ghost's default theme [Casper](https://github.com/tryghost/casper)
-[v2.1.9](https://github.com/TryGhost/Casper/releases/tag/2.1.9) for [Jekyll](https://jekyllrb.com/) / [GitHub Pages](https://pages.github.com/).
+The overall goal is to be a simple default theme like minima, looking closely to Casper and trying to be as lean and flexible as possible.
 
-## Live Demo
+For a demo of Ghost see [https://demo.ghost.io/](https://demo.ghost.io/).
 
-[Ghost's Casper](https://demo.ghost.io) // [Jasper2](https://jekyllt.github.io/jasper2)
+# Features
+- (Auto) dark mode
+- Full author pages & information via Jekyll collections
+- Auto generated tag pages plus custimisation via Jekyll collections
+- Pagination via jekyll-paginate-v2
+- Atom Feeds by [Jekyll-feed](https://github.com/jekyll/jekyll-feed)
 
-![home page](https://raw.githubusercontent.com/jekyllt/jasper2/master/assets/screenshot-desktop.jpg)
-
-
-## Features
-
-* Out of the box support for multiple authors (via `_data/authors.yml`)
-* Full author information including: picture, bio, website, twitter, facebook, etc.
-* Tag description(s) and personalised covers (via `_data/tags.yml`)
-* Related posts view at the bottom of each post
-* All Ghost default pages: Author page(s), Tag page(s), About page(s), 404, etc.
-* Pagination (infinite scrolling or standard pagination, i.e. posts across multiple pages)
-* Atom Feeds by [Jekyll-feed](https://github.com/jekyll/jekyll-feed)
-* Toggleable subscribe button (requires an external service)
-* Code Syntax Highlight with [highlight.js](https://highlightjs.org/)
-* Support for Google Analytics tracking
-* Support for PostHog analytics tracking
-* Support for Hacker News comments
-
-
-## Getting Started
-
-### Deployment
-
-There are several alternatives to building and deploying the site:
-
-1. build the site with [GitHub Actions](https://github.com/features/actions) which pushes 
-the resulting files (the contents of `_site/` or `../jasper2-pages/`) 
-to the *gh-pages* branch. This is the approach that is currently used. See 
-[jekyll_build.yml](.github/workflows/jekyll_build.yml) for more details.
-
-2. generate the site locally (more details below) and push the resulting
-HTML to a Github repository, that GitHub Pages then host;
-
-3. build the site with [travis-ci](https://travis-ci.org/) (with goodies from
-[jekyll-travis](https://github.com/mfenner/jekyll-travis)) automatically pushing the
-generated HTML files to a *gh-pages* branch.
-
-4. deploy the static website with Jekyll-compatible hosters, such as https://www.netlify.com/, that allow for deployment from the Github repo and publish the website using CDNs. Netlify has a free starter offer.
-
-For option **2)** simply clone this repository (*master branch*), and then run
-`bundle exec jekyll serve` inside the directory. Upload the resulting `_site/` (or `../jasper2-pages/`)
-contents to your repository (*master branch* if uploading as your personal page
-(e.g. username.github.io) or *gh-pages branch* if uploading as a project page
-(as for the [demo](https://github.com/jekyllt/jasper2/tree/gh-pages)).
-
-For option **3)** you will need to set up travis-ci for your personal fork. Briefly all you
-need then is to change your details in *[\_config.yml](_config.yml)* so that you can push
-to your github repo. You will also need to generate a secure key to add to your
-*[.travis.yml](.travis.yml)* (you can find more info on how to do it in that file).
-Also make sure you read the documentation from
-[jekyll-travis](https://github.com/mfenner/jekyll-travis). This approach has clear
-advantages in that you simply push your file changes to GitHub and all the HTML files
-are generated for you and pushed to *gh-pages*. Also you get to know if everything is
-still fine with your site builds. Don't hesitate to contact me if you still have any
-issues (see below about issue tracking).
-
-### Author Pages
-
-In order to properly generate author pages you need to rename the field *author* in the
-front matter of every post to match that of your each author's *username* as defined
-in the *[\_data/authors.yml](_data/authors.yml)* file.
-With the latest update, multiple author blogs are now supported out of the box.
-
-### Compiling Styles
-
-Following on the way Casper styles are compiled as [described here](https://github.com/tryghost/casper#development):
-
-Jasper2 styles are compiled using Gulp/PostCSS to polyfill future CSS spec. You'll need Node and Gulp installed globally. After that, from the theme's root directory:
-
-```bash
-$ npm install
-$ gulp
+# Installation
+Add this line to your Jekyll site's Gemfile:
+```
+gem "kaschber"
 ```
 
-Now you can edit `/assets/css/` files, which will be compiled to `/assets/built/` automatically.
+And then execute:
+```bash
+$ bundle
+```
 
-## Issues and Contributing
+# Usage
+Change the theme in your config file to Kaschber
+```
+theme: kaschber
+```
 
-This install builds well with Ruby v2.6.3 and Jekyll v3.9.0. If you run into any problems
-please log them on the [issue tracker](https://github.com/jekyllt/jasper2/issues).
+Then change your index.html or index.md to look like this
+```
+---
+layout: home
+current: home
+class: 'home-template'
+---
+```
 
-Feel free pull-request your patches and fixes.
+If you have a custom index.html, you will have to copy the index.html from the Git repository and add your changes manually.
 
-## Thanks
+## Customisation
+You can specifiy these customisation options in your `_config.yml` for site-wide options
 
-Many thanks to the Ghost team for all the design work. Also many thanks to all contributors,
-that help keeping the project alive and updated :smile:
+| Config                  | Default           | Options                           |
+|-------------------------|-------------------|-----------------------------------|
+| title_font              | System default    | Elegant serif                     |
+| body_font               | System default    | Modern sans-serif                 |
+| header_style            | Center aligned    | Center aligned, Left, aligned, Hidden |
+| show_logo_in_navigation | false             | True, False                        |
+| feed_layout             | Classic           | Classic, Grid, List                 |
+| color_scheme            | Auto              | Light, Dark, Auto                   |
+| post_image_style        | Wide              | Wide, Full, Small, Hidden            |
+| navigation_layout       | Logo on cover     | Logo on cover, Logo in the middle, stacked | 
+
+You can specifiy these additional customisation options per post or in the default section for posts `_config.yml`
+| Config                  | Default           | Options                           |
+|-------------------------|-------------------|-----------------------------------|
+| show_recent_posts_footer | True | True, False   |
+| post_image_style        | Wide              | Wide, Full, Small, Hidden            |
+| custom_excerpt        | ""              | <Your custom excerpt shown on the page and the post card>           |
+
+Kaschber also features several points to inject your custom code into the template. You can create
+- `_includes/custom-head.html` to include custom css or any other tags which get rendered in the head section
+- `_includes/custom-js.html` to include any additional Javascript at the bottom of your page
+- `_includes/custom-post-content.html` to include any custom post-specific content which gets inserted in every post. E.g. a table of content tag
+
+### Navigation
+Per default, Kaschber will include all files in your root folder in the header navigation bar. You can customise this with the setting `header_pages` in your `_config.yml`. E.g.
+
+```
+header_pages:
+  - my_page.md
+  - about.md
+```
+
+### Colours
+You can overwrite any colours and styles by just adding css files and include them in your `custom-head.html`. To overwrite the default accent colour #ff0095, do the following
+1. Create a file in your assets folder with the following content
+```css
+:root {
+  --ghost-accent-color: #6D7C86;
+}
+```
+2. Create `custom-head.html` in your `_includes` folder
+3. Include the new css file in your `custom-head.html`
+
+## Authors
+To include author information, just create a folder called `_authors` and create your author information via markdown or html files. E.g.
+```
+---
+username: Ghost
+name: Casper Ghost
+website: https://github.com/TryGhost/Casper/
+bio: The professional publishing platform
+picture: assets/images/ghost.png
+facebook_url: ghost
+twitter_url: tryghost
+cover: False
+---
+```
+
+Then include the following Jekyll config in your `_config.yml`
+```
+collections:
+  authors:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "authors"
+    values:
+      layout: author
+      current: author
+      cover: false
+      class: 'author-template'
+      label: Author
+```
+
+## Tags
+To create tags specifically, create a folder `_tags` and insert your tags there as markdown or html file. E.g.
+```
+name: speeches
+description: Some of the greatest words ever spoken.
+cover: assets/images/speeches.jpg
+```
+
+Then include the following Jekyll config in your `_config.yml`
+```
+collections:
+  tags:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "tags"
+    values:
+      layout: tag
+      current: tag
+      cover: false
+      class: 'tag-template'
+      label: Tag
+```
+
+# Contribute
+If you would like to contribute, please keep the files as closely as possible to the original Ghost handlebar files. This will make maintenance easier. This is also the reason why the files haven't been really broken down into smaller parts.
+
+## Build
+To build the files locally, you have to have npm and gulp installed.
+```
+$ gulp build
+```
+
+To test your changes locally execute
+```bash
+$ gem build
+$ gem install kaschber-<current-version-in-gemspec>
+```
 
 
-## Copyright & License
-
-Same licence as the one provided by Ghost's team. See Casper's theme [license](GHOST.txt).
-
-Copyright (C) 2015-2021 - Released under the MIT License.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# Acknowledgements
+This theme was heavily inspired by [Jasper2](https://github.com/jekyllt/jasper2).

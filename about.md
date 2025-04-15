@@ -1,7 +1,8 @@
 ---
 date: '2022-05-24 11:47:10'
 layout: page
-title: About Me
+title: About
+class: 'page-template'
 ---
 Hi, I'm Chris. I am passionate about the power of technology to improve lives, and that passion has taken me from Melbourne to Silicon Valley (in 2013) and back to Sydney (in 2019).
   * [LinkedIn](https://www.linkedin.com/in/cadamsau/)

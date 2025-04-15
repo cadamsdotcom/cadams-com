@@ -1,76 +1,83 @@
-import gulp from 'gulp';
-
+const {series, watch, src, dest, parallel} = require('gulp');
+const pump = require('pump');
 // gulp plugins and utils
-import gutil from 'gulp-util';
-import livereload from 'gulp-livereload';
-import postcss from 'gulp-postcss';
-import sourcemaps from 'gulp-sourcemaps';
-import { default as zip } from 'gulp-zip';
+const livereload = require('gulp-livereload');
+const postcss = require('gulp-postcss');
+const zip = require('gulp-zip');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const beeper = require('beeper');
 
 // postcss plugins
-import autoprefixer from 'autoprefixer';
-import colorFunction from 'postcss-color-function';
-import cssnano from 'cssnano';
-import customProperties from 'postcss-custom-properties';
-import easyimport from 'postcss-easy-import';
+const autoprefixer = require('autoprefixer');
+const colorFunction = require('postcss-color-mod-function');
+const cssnano = require('cssnano');
+const easyimport = require('postcss-easy-import');
 
-const swallowError = function swallowError(error) {
-    gutil.log(error.toString());
-    gutil.beep();
-    this.emit('end');
+
+function serve(done) {
+    livereload.listen();
+    done();
+}
+
+const handleError = (done) => {
+    return function (err) {
+        if (err) {
+            beeper();
+        }
+        return done(err);
+    };
 };
 
-const nodemonServerInit = function () {
-    livereload.listen(1234);
-};
-
-function css() {
-    const processors = [
-        easyimport,
-        customProperties,
-        colorFunction(),
-        autoprefixer(),
-        cssnano()
-    ];
-
-    return gulp.src('assets/css/*.css')
-        .on('error', swallowError)
-        .pipe(sourcemaps.init())
-        .pipe(postcss(processors))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('assets/built/'))
-        .pipe(livereload());
+function css(done) {
+    pump([
+        src('assets/css/*.css', {sourcemaps: true}),
+        postcss([
+            easyimport,
+            colorFunction(),
+            autoprefixer(),
+            cssnano()
+        ]),
+        dest('assets/built/', {sourcemaps: '.'}),
+        livereload()
+    ], handleError(done));
 }
 
-function watch() {
-    gulp.watch('assets/css/**', css);
+function js(done) {
+    pump([
+        src([
+            // pull in lib files first so our own code can depend on it
+            'assets/js/lib/*.js',
+            'assets/js/*.js'
+        ], {sourcemaps: true}),
+        concat('kaschber.js'),
+        uglify(),
+        dest('assets/built/', {sourcemaps: '.'}),
+        livereload()
+    ], handleError(done));
 }
 
-async function zipTask() {
-    const targetDir = 'dist/';
-    const pkg = await import('./package.json', { assert: { type: 'json' } });
-    const themeName = pkg.default.name;
-    const filename = themeName + '.zip';
+function zipper(done) {
+    const filename = require('./package.json').name + '.zip';
 
-    return gulp.src([
-        '**',
-        '!node_modules', '!node_modules/**',
-        '!dist', '!dist/**'
-    ])
-        .pipe(zip(filename))
-        .pipe(gulp.dest(targetDir));
+    pump([
+        src([
+            '**',
+            '!node_modules', '!node_modules/**',
+            '!dist', '!dist/**',
+            '!yarn-error.log',
+            '!yarn.lock',
+            '!gulpfile.js'
+        ]),
+        zip(filename),
+        dest('dist/')
+    ], handleError(done));
 }
 
-function build(cb) {
-    nodemonServerInit();
-    cb();
-}
+const cssWatcher = () => watch('assets/css/**', css);
+const watcher = parallel(cssWatcher);
+const build = series(css, js);
 
-const buildTask = gulp.series(css, build);
-const zipBuild = gulp.series(css, zipTask);
-
-export const defaultTask = gulp.series(buildTask, watch);
-export { css, watch, zipBuild as zip };
-
-// Set the default task
-export default defaultTask;
+exports.build = build;
+exports.zip = series(build, zipper);
+exports.default = series(build, serve, watcher);

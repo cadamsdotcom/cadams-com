@@ -1,96 +1,73 @@
-# Jekyll configuration
-markdown: kramdown
-highlighter: rouge
-paginate: 100 # it will paginate after this number
-language: 'en-uk'
-words_per_minute: 200
-
-# edit baseurl to simply '/' if using as your personal page (instead of a project page)
-baseurl: /
-
-# Website info
 title: Home of Chris Adams
-description: The professional publishing platform
-cover: assets/images/blog-cover.jpg
-logo: assets/images/blog-icon.png
-logo_dark: assets/images/favicon.png
-favicon: assets/images/favicon.png
-CNAME: #add cname for website to be created
-
-# Social info
-navigation: True # show the navbar links
-subscribers: False # you need to connect an external service for this to work,
-# if 'True' the submit button is disabled for now, but you can change that
-# by editing `_includes/subscribe-form.html`
+email: chris@cadams.com
+description: >-
+  Sydney based, AI-focused <a href="https://linkedin.com/in/cadamsdotcom" target="_blank" rel="noopener">software entrepreneur</a> who lived in San Francisco & Silicon Valley for 7 years.<br/><br/>
+  Motivated by the power of technology to improve lives.<br/><br/>
+  20+ years of software engineering experience across full-stack, backend, infrastructure, Site Reliability Enigneering, and AI engineering. Past work includes Uber, Airbnb, Canva, and a wide variety of startups - several of which I co-founded.<br/><br/>
+  My hobbies include software engineering, ocean swimming, surf lifesaving, and triathlon - sometimes all at once!
+baseurl: "/" # the subpath of your site, e.g. /blog
+url: "https://cadams.com" # the base hostname & protocol for your site, e.g. http://example.com
+cover: assets/images/2022/05/mudassir-ali-wpKKwPLRphA-unsplash.jpg
 twitter: cadamsdotcom
-facebook: cadamsdotcom
-github: cadamsdotcom
+github:  cadamsdotcom
 linkedin: cadamsdotcom
+facebook: cadamsdotcom
 
-# Enable Comments
-comments: True
-
-# Analytics
-google_analytics: G-BNX8ZBVSDH
-posthog_analytics: phc_HJgbUvZgP8Ftl7KsWvhu1eIDrL7QXn0wRCNksrveJuU
-
-# Permalinks
-permalink: /:title
-# permalink: /author/:author
-# permalink: /tag/:tag
-
-# Authors' info in `_data/authors.yml`
-# Tags' info in `_data/tags_info.yml`
+feed_layout: "Classic"
+color_scheme: "Auto"
+language: 'en-uk'
+navigation_layout: "Logo on cover"
 
 # gems and other configs
-plugins_dir: [_plugins]
-plugins: [jekyll-paginate, jekyll-feed]
+plugins: 
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-paginate-v2
 
 feed:
   path: feed.xml
 
-# Additional settings available on the front-matter
-# Site logo in the index.html (as in demo.ghost.io)
-# Author's page cover in _layouts/author.html
-# The same for page.html and tag.html layouts
-# Post's page cover on a per-post basis _posts/...
-# Hacker News comments on a per-post basis
-# ...
-
-# Settings for building master branch with travis-ci
-# with jekyll-travis
-
-# Settings for deploy rake task
-# Username and repo of Github repo, e.g.
-# https://github.com/USERNAME/REPO.git
-# username defaults to ENV['GIT_NAME'] used by Travis
-# repo defaults to USERNAME.github.io
-# Branch defaults to "source" for USERNAME.github.io
-# or "master" otherwise
-safe: False
-lsi: False
-username: jekyllt
-repo: jasper2
-branch: master
-relative_source: ../jasper2/
-destination: ../jasper2-pages/
-production_url:  https://jekyllt.github.io/jasper2/
-source_url:  https://github.com/jekyllt/jasper2/
-
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
 exclude:
-  - assets/css
-  - node_modules
-  - vendor
-  - .travis.yml
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
   - Gemfile
   - Gemfile.lock
-  - gulpfile.js
-  - LICENSE
-  - package.json
-  - package-lock.json
-  - Rakefile
-  - README.md
-  - script.py
-  - changelog.md
-  - "*.Rmd"
-  - .git*
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+collections:
+  authors:
+    output: true
+  tags:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "authors"
+    values:
+      layout: author
+      current: author
+      cover: false
+      class: 'author-template'
+      label: Author
+  - scope:
+      path: ""
+      type: "tags"
+    values:
+      layout: tag
+      current: tag
+      cover: false
+      class: 'tag-template'
+      label: Tag

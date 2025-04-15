@@ -2,6 +2,8 @@
 date: '2024-09-26 02:00:15'
 layout: post
 title: Ideas to level up daily standups
+author: cadams
+tags: [technology]
 ---
 Today while reading [The Daily Scrum](https://rethinkingsoftware.substack.com/p/the-daily-scrum) over at [Rethinking Software](https://rethinkingsoftware.substack.com/) I realized that what is framed as a complaint could be reframed as a question:
 Why do daily standups cause so much consternation and anxiety?

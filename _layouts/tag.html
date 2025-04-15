@@ -1,43 +1,52 @@
 ---
 layout: default
-current: tag
-title: Tag Page
-cover: false
-class: 'tag-template'
-navigation: True
-logo: 'assets/images/ghost.png'
 ---
 
-<!-- default -->
-<!-- The tag above means - insert everything in this file into the {body} of the default.hbs template -->
+<!-- dynamically loading backgrounds for tags,  descriptions and page titles -->
+{% assign decoded_url = page.url | url_decode %}
+{% for tag in site.tags %}
+  {% if decoded_url contains tag.name %}
+    {% assign cover = tag.cover %}
+    {% assign tag_description = tag.description %}
+  {% endif %}
+{% endfor %}
 
-<!-- The big featured header, it uses blog cover image as a BG if available -->
-<!-- #tag -->
-{% include dynamic_tag_info.html %}
-<header class="site-header outer {% if cover or page.cover %}"
-    style="background-image: url({{ site.baseurl }}{% if cover %}{{ cover }}{% else %}{{ page.cover }}{% endif%}) {% else %}no-cover{% endif %}">
-    <div class="inner">
-        {% include site-nav.html %}
-        <div class="site-header-content">
-            <h1 class="site-title">{{ page.tag | capitalizeall }}</h1>
-            <h2 class="site-description">
-                {% if tag_description %}
-                {{ tag_description }}
-                {% elsif page.tag %}
-                A collection of {{ paginator.total_posts }} posts
-                {% endif %}
-            </h2>
-        </div>
-    </div>
-</header>
-<!-- tag -->
+{% assign filtered_posts = paginator.posts | default: site.posts | where_exp: 'items', 'items.tags contains page.title or items.tags contains page.tag' %}
+<main id="site-main" class="site-main outer">
 
-<!-- The main content area -->
-<main id="site-main" class="site-main outer" role="main">
-    <div class="inner">
-        <div class="post-feed">
-            <!-- The tag below includes the markup for each post - partials/post-card.hbs -->
-            {% include post-card.html %}
+  <div class="inner posts">
+    <div class="post-feed">
+
+      <section class="post-card post-card-large">
+
+        {% if cover or page.cover %}
+          <div class="post-card-image-link">
+            <img class="post-card-image" src="{{ site.baseurl }}{% if cover %}{{ cover }}{% else %}{{ page.cover }}{% endif %} " alt="{{title}}">
+          </div>
+        {% endif %}
+
+
+        <div class="post-card-content">
+          <div class="post-card-content-link">
+            <header class="post-card-header">
+              <h2 class="post-card-title">{{ page.tag | default: page.name }}</h2>
+            </header>
+            <div class="post-card-excerpt">
+              {% if page.description %}
+                {{ page.description }}
+              {% elsif page.tag %}
+                A collection of {{ filtered_posts.size }} posts
+              {% endif %}
+            </div>
+          </div>
         </div>
+
+      </section>
+
+      {%  for post in filtered_posts %}
+        {% include post-card.html post=post %}
+      {% endfor %}
+
     </div>
+  </div>
 </main>

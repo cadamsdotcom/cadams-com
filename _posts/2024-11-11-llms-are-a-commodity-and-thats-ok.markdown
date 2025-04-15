@@ -2,6 +2,8 @@
 date: '2024-11-11 04:50:24'
 layout: post
 title: LLMs are like pizza, and that's OK
+author: cadams
+tags: [technology]
 ---
 Let's get pizza. Cheese? Meat lovers? Vegetarian? Want pineapple? Deep dish, giant slice, or fully loaded with the lot? There's enough takes on pizza to please every taste; and the existence of one type of pizza doesn't devalue any other. Pizza is a food _genre_.
 Say you want a car. Big SUV? Small hatchback? There's a company who will sell you one of those. What a car is, is _well defined_ and _constrained_ by roads and other cars.

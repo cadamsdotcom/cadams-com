@@ -2,6 +2,8 @@
 date: '2022-07-01 05:25:00'
 layout: post
 title: Switch Homebrew Setup in June 2022
+author: cadams
+tags: [technology]
 ---
 If you have a [Nintendo Switch which can be patched to run homebrew software](https://nh-server.github.io/switch-guide/user_guide/getting_started/), the possibilities are endless. Fortunately for me, my Switch falls into this category. More people should try it!
 Over the years of owning this console I've enjoyed tons of great homebrew software, first via SXOS custom firmware (discontinued, allegedly due to a [raid](https://www.reddit.com/r/SwitchPirates/comments/j6h1ak/so_now_that_the_tx_team_were_arrested_is_sxos_dead/)) and now via [Atmosphere](https://github.com/Atmosphere-NX/Atmosphere).

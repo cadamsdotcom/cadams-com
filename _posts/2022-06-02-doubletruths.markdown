@@ -2,6 +2,8 @@
 date: '2022-06-02 08:47:01'
 layout: post
 title: Doubletruths
+author: cadams
+tags: [philosophy]
 ---
 > You don't have to be wrong if someone else is right. Two contradictory things can be true at the same time.
 Walking along a beach, I spied a ferris wheel. A lone security guard stood in the moonlight, guarding the closed ride. Curious, I walked closer. Our paths crossed. A friendly hello was in order!

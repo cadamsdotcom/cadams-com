@@ -1,0 +1,23 @@
+{% comment %}
+  Placeholder to allow defining custom footer navigation. For example, you could put your social links here.
+
+{% endcomment %}
+
+
+<div class="gh-social">
+  {% if site.facebook %}
+    <a href="https://facebook.com/{{ site.facebook }}" target="_blank" rel="noopener" class="gh-social-link gh-social-facebook">{% include icons/facebook.html %}</a>
+  {% endif %}
+  {% if site.linkedin %}
+    <a href="https://linkedin.com/in/{{ site.linkedin }}" target="_blank" rel="noopener" class="gh-social-link gh-social-linkedin">{% include icons/linkedin.html %}</a>
+  {% endif %}
+  {% if site.twitter %}
+    <a href="https://twitter.com/{{ site.twitter }}" target="_blank" rel="noopener" class="gh-social-link gh-social-twitter">{% include icons/twitter.html %}</a>
+  {% endif %}
+  {% if site.github %}
+    <a href="https://github.com/{{ site.github }}" target="_blank" rel="noopener" class="gh-social-link gh-social-github">{% include icons/github.html %}</a>
+  {% endif %}
+  {% if site.rss %}
+    <a href="{{ site.baseurl }}{% if site.feed.path %}{{site.feed.path}}{% else %}feed.xml{% endif %}" target="_blank" rel="noopener" class="gh-social-link gh-social-rss">{% include icons/rss.html %}</a>
+  {% endif %}
+</div>

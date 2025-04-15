@@ -2,6 +2,8 @@
 date: '2024-10-25 06:55:21'
 layout: post
 title: Counting Bondi Salties swimmers with a little help from AI
+author: cadams
+tags: [technology]
 ---
 This is a story about a new way of building software: in dialogue with an LLM. In this case, [Claude 3.5 Sonnet](https://www.anthropic.com/claude/sonnet') from Anthropic.
 I'm a software engineer who loves to swim. It began with curiosity. Look at that photo up top: how many people are there?
