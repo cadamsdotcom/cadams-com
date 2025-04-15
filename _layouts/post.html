@@ -2,8 +2,10 @@
 layout: default
 current: post
 class: post-template
-disqus: false
 ---
+
+{% assign words_per_minute = site.words_per_minute | default: 200 %}
+{% assign words = page.content | strip_html | number_of_words %}
 
 <!-- default -->
 
@@ -25,20 +27,47 @@ into the {body} of the default.hbs template -->
         <article class="post-full {% if page.tags.size > 0 %}{% for tag in page.tags %} tag-{{ tag | slugify: "latin" }}{% endfor %}{% endif %} {{ page.subclass }} {% unless page.cover %}no-image{% endunless %}">
 
             <header class="post-full-header">
-                <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="{{ page.date | date:'%e %B %Y' }}">{{ page.date | date:'%e %B %Y' }}</time>
-                    {% if page.tags.size > 0 %}
-                        <span class="date-divider">/</span>
-                        {% for tag in page.tags %}
-                            {% if forloop.index == page.tags.size %}
-                               <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | upcase }}</a>
-                            {% else %}
-                               <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | upcase }}</a>,
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </section>
                 <h1 class="post-full-title">{{ page.title }}</h1>
+                {% for author in site.data.authors %}
+                    {% if author[1].username == page.author %}
+                        <section class="author-card">
+                            {% if author[1].picture %}
+                                <a href="/author/{{ page.author }}/" aria-label="Read more of {{ author[1].name }}">
+                                    <img class="author-profile-image" src="{{ site.baseurl }}{{ author[1].picture }}" alt="{{ page.author }}" />
+                                </a>
+                            {% endif %}
+                            <section class="author-card-content">
+                                <h4 class="author-card-name">
+                                    <a href="{{ site.baseurl }}author/{{ page.author }}" aria-label="Read more of {{ author[1].name }}">{{ author[1].name }}</a>
+                                </h4>
+                                <p>
+                                    <time datetime="{{ page.date | date:'%0e %B %Y' }}">{{ page.date | date:'%0e %B %Y' }}</time>
+                                    <span class="byline-reading-time"><span class="bull">•</span>
+                                    {% if words <= words_per_minute %}
+                                        1 min read
+                                    {% else %}
+                                        {{ words | divided_by:words_per_minute }} min read
+                                    {% endif %}
+                                    </span>
+                                </p>
+
+                                {% if page.tags.size > 0 %}
+                                    <p>
+                                        {% for tag in page.tags %}
+                                            {% if forloop.index == page.tags.size %}
+                                                <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | capitalize }}</a>
+                                                {% else %}
+                                                <a href='{{ site.baseurl }}tag/{{ tag | slugify: "latin" }}/'>{{ tag | capitalize }}</a>,
+                                            {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                    
+    
+                            </section>
+                        </section>
+                    {% endif %}
+                {% endfor %}
             </header>
 
             {% if page.cover %}
@@ -87,25 +116,11 @@ into the {body} of the default.hbs template -->
                 <!-- /author  -->
             </footer>
 
-            <!-- If you use Disqus comments, just uncomment this block.
-            The only thing you need to change is "test-apkdzgmqhj" - which
-            should be replaced with your own Disqus site-id. -->
-            {% if site.disqus or page.disqus %}
+            <!-- If you use comments, just uncomment this block. -->
+            {% if site.comments and page.hacker_news_id %}
                 <section class="post-full-comments">
-                    <div id="disqus_thread"></div>
-                    <script>
-                        var disqus_config = function () {
-                            var this_page_url = '{{ site.url }}{{ page.url }}';
-                            var this_page_identifier = '{{ page.id }}';
-                            var this_page_title = '{{ page.title }}';
-                        };
-                        (function() {
-                            var d = document, s = d.createElement('script');
-                            s.src = 'https://{{ site.disqus_shortname }}.disqus.com/embed.js';
-                            s.setAttribute('data-timestamp', +new Date());
-                            (d.head || d.body).appendChild(s);
-                        })();
-                    </script>
+                    <p>To contribute, post on <a href="https://news.ycombinator.com/item?id={{ page.hacker_news_id }}" target="_blank" rel="noopener">Hacker News</a>.</p>
+                    <div id="hacker-news-comments" class="hacker-news-comments">Loading comments from Hacker News...</div>
                 </section>
             {% endif %}
 

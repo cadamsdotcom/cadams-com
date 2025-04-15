@@ -26,7 +26,8 @@ This is a full-featured port of Ghost's default theme [Casper](https://github.co
 * Toggleable subscribe button (requires an external service)
 * Code Syntax Highlight with [highlight.js](https://highlightjs.org/)
 * Support for Google Analytics tracking
-* Support for Disqus comments (not Ghost standard)
+* Support for PostHog analytics tracking
+* Support for Hacker News comments
 
 
 ## Getting Started

@@ -1,10 +1,10 @@
 <script>
 
-// NOTE: Scroll performance is poor in Safari
-// - this appears to be due to the events firing much more slowly in Safari.
-//   Dropping the scroll event and using only a raf loop results in smoother
-//   scrolling but continuous processing even when not scrolling
-$(document).ready(function () {
+  // NOTE: Scroll performance is poor in Safari
+  // - this appears to be due to the events firing much more slowly in Safari.
+  //   Dropping the scroll event and using only a raf loop results in smoother
+  //   scrolling but continuous processing even when not scrolling
+  $(document).ready(function () {
     // Start fitVids
     var $postContent = $(".post-full-content");
     $postContent.fitVids();
@@ -20,44 +20,134 @@ $(document).ready(function () {
     var ticking = false;
 
     function onScroll() {
-        lastScrollY = window.scrollY;
-        requestTick();
+      lastScrollY = window.scrollY;
+      requestTick();
     }
 
     function onResize() {
-        lastWindowHeight = window.innerHeight;
-        lastDocumentHeight = $(document).height();
-        requestTick();
+      lastWindowHeight = window.innerHeight;
+      lastDocumentHeight = $(document).height();
+      requestTick();
     }
 
     function requestTick() {
-        if (!ticking) {
-            requestAnimationFrame(update);
-        }
-        ticking = true;
+      if (!ticking) {
+        requestAnimationFrame(update);
+      }
+      ticking = true;
     }
 
     function update() {
-        var trigger = title.getBoundingClientRect().top + window.scrollY;
-        var triggerOffset = title.offsetHeight + 35;
-        var progressMax = lastDocumentHeight - lastWindowHeight;
+      var trigger = title.getBoundingClientRect().top + window.scrollY;
+      var triggerOffset = title.offsetHeight + 35;
+      var progressMax = lastDocumentHeight - lastWindowHeight;
 
-        // show/hide floating header
-        if (lastScrollY >= trigger + triggerOffset) {
-            header.classList.add('floating-active');
-        } else {
-            header.classList.remove('floating-active');
-        }
+      // show/hide floating header
+      if (lastScrollY >= trigger + triggerOffset) {
+        header.classList.add('floating-active');
+      } else {
+        header.classList.remove('floating-active');
+      }
 
-        progressBar.setAttribute('max', progressMax);
-        progressBar.setAttribute('value', lastScrollY);
+      progressBar.setAttribute('max', progressMax);
+      progressBar.setAttribute('value', lastScrollY);
 
-        ticking = false;
+      ticking = false;
     }
 
-    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize, false);
 
     update();
-});
+  });
+
+  {% if site.comments and page.hacker_news_id %}
+  $(document).ready(function () {
+    const commentsContainer = document.getElementById('hacker-news-comments');
+
+    fetch(`https://hn.algolia.com/api/v1/items/{{ page.hacker_news_id }}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response not ok: response');
+        }
+        return response.json();
+      })
+      .then(data => {
+        commentsContainer.innerHTML = '';
+
+        // Render the main post
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+            <div class="post-header">
+              <a href="${data.url || '#'}" class="post-title">${data.title || 'Untitled'}</a>
+              <span class="post-meta">
+                ${data.points || 0} points by ${data.author || 'anonymous'} 
+                at ${new Date(data.created_at).toLocaleString()}
+              </span>
+            </div>
+            ${data.text ? `<div class="post-text">${data.text}</div>` : ''}
+          `;
+        commentsContainer.appendChild(postElement);
+
+        // Add a divider
+        const divider = document.createElement('div');
+        divider.className = 'divider';
+        commentsContainer.appendChild(divider);
+
+        // Render the comments section
+        const commentsElement = document.createElement('div');
+        commentsElement.className = 'comments-tree';
+        commentsContainer.appendChild(commentsElement);
+
+        // Recursively render all comments
+        if (data.children && data.children.length > 0) {
+          renderComments(data.children, commentsElement, 0);
+        } else {
+          commentsElement.innerHTML = '<div class="no-comments">No comments yet. Go start the conversation!</div>';
+        }
+
+        // Apply styles
+        applyStyles();
+      })
+      .catch(error => {
+        commentsContainer.innerHTML = `Error: ${error.message}`;
+        console.error('Error fetching comments:', error);
+      });
+  };
+
+  // Private function to recursively render comments
+  function renderComments(comments, parentElement, depth) {
+    comments.forEach(comment => {
+      const commentElement = document.createElement('div');
+      commentElement.className = 'comment';
+      commentElement.style.marginLeft = `${depth * 20}px`;
+
+      commentElement.innerHTML = `
+          <div class="comment-meta">
+            <span class="comment-author">${comment.author || 'anonymous'}</span>
+            <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+            <span class="comment-points">${comment.points || 0} points</span>
+          </div>
+          <div class="comment-text">${comment.text || ''}</div>
+        `;
+
+      parentElement.appendChild(commentElement);
+
+      // Recursively render child comments
+      if (comment.children && comment.children.length > 0) {
+        renderComments(comment.children, parentElement, depth + 1);
+      }
+    });
+  }
+
+  // Auto-load if the itemId attribute is set on the comments div
+  document.addEventListener('DOMContentLoaded', () => {
+    const commentsDiv = document.getElementById('comments');
+    if (commentsDiv && commentsDiv.getAttribute('data-item-id')) {
+      fetchAndRenderComments(commentsDiv.getAttribute('data-item-id'));
+    }
+  });
+  }) ();
+  {% endif %}
 </script>

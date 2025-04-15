@@ -9,7 +9,7 @@ words_per_minute: 200
 baseurl: /
 
 # Website info
-title: Ghost
+title: Home of Chris Adams
 description: The professional publishing platform
 cover: assets/images/blog-cover.jpg
 logo: assets/images/blog-icon.png
@@ -19,18 +19,20 @@ CNAME: #add cname for website to be created
 
 # Social info
 navigation: True # show the navbar links
-subscribers: True # you need to connect an external service for this to work,
+subscribers: False # you need to connect an external service for this to work,
 # if 'True' the submit button is disabled for now, but you can change that
 # by editing `_includes/subscribe-form.html`
-twitter: tryghost # replace by your username
-facebook: ghost # replace by your username
+twitter: cadamsdotcom
+facebook: cadamsdotcom
+github: cadamsdotcom
+linkedin: cadamsdotcom
 
-# Disqus
-disqus: False
-disqus_shortname: jekyllt # replace with your disqus username
+# Enable Comments
+comments: True
 
-# Google Analytics
-google_analytics: UA-69281367-1 # replace with your GA tracking identifier
+# Analytics
+google_analytics: G-BNX8ZBVSDH
+posthog_analytics: phc_HJgbUvZgP8Ftl7KsWvhu1eIDrL7QXn0wRCNksrveJuU
 
 # Permalinks
 permalink: /:title
@@ -51,8 +53,8 @@ feed:
 # Site logo in the index.html (as in demo.ghost.io)
 # Author's page cover in _layouts/author.html
 # The same for page.html and tag.html layouts
-# Post's page cover as a per-post basis _posts/...
-# Disqus comments as a per-post basis
+# Post's page cover on a per-post basis _posts/...
+# Hacker News comments on a per-post basis
 # ...
 
 # Settings for building master branch with travis-ci
@@ -82,7 +84,6 @@ exclude:
   - .travis.yml
   - Gemfile
   - Gemfile.lock
-  - GHOST.txt
   - gulpfile.js
   - LICENSE
   - package.json

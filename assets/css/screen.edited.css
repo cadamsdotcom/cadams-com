@@ -24,7 +24,7 @@ production stylesheet in assets/built/screen.css
 }
 
 .pagination a {
-    color: #3eb0ef;
+    color: #0891b2;
     transition: all 0.2s ease;
 }
 
@@ -56,7 +56,7 @@ production stylesheet in assets/built/screen.css
 
 .older-posts:hover,
 .newer-posts:hover {
-    color: #3eb0ef;
+    color: #0891b2;
     border-color: #98a0a4;
 }
 
