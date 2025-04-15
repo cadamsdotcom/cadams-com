@@ -5,7 +5,7 @@ description: >-
   Motivated by the power of technology to improve lives.<br/><br/>
   20+ years of software engineering experience across full-stack, backend, infrastructure, Site Reliability Enigneering, and AI engineering. Past work includes Uber, Airbnb, Canva, and a wide variety of startups - several of which I co-founded.<br/><br/>
   My hobbies include software engineering, ocean swimming, surf lifesaving, and triathlon - sometimes all at once!
-baseurl: "/" # the subpath of your site, e.g. /blog
+baseurl: / # the subpath of your site, e.g. /blog
 url: "https://cadams.com" # the base hostname & protocol for your site, e.g. http://example.com
 cover: assets/images/2022/05/mudassir-ali-wpKKwPLRphA-unsplash.jpg
 twitter: cadamsdotcom
