@@ -2,7 +2,7 @@
 date: '2022-05-25 07:44:39'
 layout: post
 title: '20-year high school reunion: a report.'
-cover: assets/images/size/w2000/2022/05/De-La-Salle-College-Lecture-Theatre-external-Education-Architecture.jpeg
+cover: assets/images/2022/05/De-La-Salle-College-Lecture-Theatre-external-Education-Architecture.jpeg
 author: cadams
 tags: [philosophy]
 ---

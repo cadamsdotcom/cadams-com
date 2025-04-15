@@ -2,7 +2,7 @@
 date: '2022-07-01 05:25:00'
 layout: post
 title: Switch Homebrew Setup in June 2022
-cover: assets/images/size/w2000/2022/07/switch-homebrew-1.jpg
+cover: assets/images/2022/07/switch-homebrew-1.jpg
 author: cadams
 tags: [technology]
 ---

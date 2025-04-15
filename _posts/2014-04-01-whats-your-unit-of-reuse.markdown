@@ -2,7 +2,7 @@
 date: '2014-04-01 00:00:00'
 layout: post
 title: What's your unit of (software) reuse?
-cover: assets/images/size/w2000/2022/05/e-waste-recycling.jpeg
+cover: assets/images/2022/05/e-waste-recycling.jpeg
 author: cadams
 tags: [technology, philosophy]
 ---
