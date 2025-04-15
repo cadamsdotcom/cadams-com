@@ -38,8 +38,7 @@ jobs:
         with:
           node-version: latest
       - name: Build assets
-        run: npm run pretest
-        working-directory: .
+        run: npm install && gulp build
       - name: Setup Ruby
         # https://github.com/ruby/setup-ruby/releases/tag/v1.207.0
         uses: ruby/setup-ruby@4a9ddd6f338a97768b8006bf671dfbad383215f4
