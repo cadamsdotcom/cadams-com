@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: Art requires a context
 author: cadams
 ---

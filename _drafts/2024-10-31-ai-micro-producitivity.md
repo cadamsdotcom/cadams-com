@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: Using AI to improve your "Micro-productivity"
 author: cadams
 ---

@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: AI cannot push the frontier forward
 author: cadams
 ---

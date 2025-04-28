@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: Making apps that won't hook your kids
 author: cadams
 ---

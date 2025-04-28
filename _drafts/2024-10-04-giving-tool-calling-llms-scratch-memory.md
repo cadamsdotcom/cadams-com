@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: Giving tool-calling LLMs scratch memory
 author: cadams
 ---

@@ -1,6 +1,5 @@
 ---
 layout: post
-published: false
 title: Is my phone listening to me?
 author: cadams
 ---
