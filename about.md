@@ -6,8 +6,8 @@ class: page-template
 ---
 Hi, I'm Chris. I am passionate about the power of technology to improve lives, and that passion has taken me from Melbourne to Silicon Valley (in 2013) and back to Sydney (in 2019).
   
-  * [LinkedIn](https://www.linkedin.com/in/cadamsau/)
-  * [Github](https://github.com/thecadams/)
+  * [LinkedIn](https://www.linkedin.com/in/cadamsdotcom/)
+  * [Github](https://github.com/cadamsdotcom/)
 
 ![](/assets/images/2022/05/image-5.png)
 *In 2019, after graduating from my Executive MBA.*

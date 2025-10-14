@@ -41,7 +41,7 @@ I fired up [Claude](https://claude.ai) and enabled [Artifacts](https://support.a
 > Claude: I understand you're looking to create a web application that can accept image uploads and use the Segment Anything model to count the number of humans in the image. This is an interesting project that combines web development, image processing, and machine learning. Let's break down the components we'll need and create a basic structure for this application.  
 > (...)
 
-Claude generated a Flask application in python, which used Segment Anything, as instructed. The app was a single file ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#human-counter-web-app-using-segment-anything))
+Claude generated a Flask application in python, which used Segment Anything, as instructed. The app was a single file ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#human-counter-web-app-using-segment-anything))
 
 > Claude: This Python script sets up a Flask web application that can accept image uploads, process them using the Segment Anything Model (SAM), and count the number of humans in the image. Here's a breakdown of the main components:  
 > (...)
@@ -72,7 +72,7 @@ Claude rewrote the app with this new library for me and told me what it was doin
 
 > **Me: What's in`index.html`?**
 
-Claude generated a nice HTML template and explained its contents. It suggested adding a loading indicator which seemed like a great idea! ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#html-template-for-human-counter-web-app-with-loading-indicator))
+Claude generated a nice HTML template and explained its contents. It suggested adding a loading indicator which seemed like a great idea! ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#html-template-for-human-counter-web-app-with-loading-indicator))
 
 > **Me: Can you add the loading indicator?**
 
@@ -159,7 +159,7 @@ Oh look, the numbers are out of order. Easy fix!
 <img src="/assets/images/2024/10/Screenshot-2024-10-25-at-5.47.42-PM.jpeg"/>
 </div>
 
-Not all the faces were detected but a manual count could close the gap. At this point I had something ready to demo! I did some edits to the top text, made some changes to the website, committed the code to a [GitHub repo](https://github.com/thecadams/HowManySwimmers), and posted to our group chat, where it was well received:
+Not all the faces were detected but a manual count could close the gap. At this point I had something ready to demo! I did some edits to the top text, made some changes to the website, committed the code to a [GitHub repo](https://github.com/cadamsdotcom/HowManySwimmers), and posted to our group chat, where it was well received:
 
 ![](/assets/images/2024/10/Screenshot-2024-10-25-at-3.21.29-PM.jpeg)
 
@@ -177,11 +177,11 @@ What about upscaling the image before running the face recognition:
 > (...)  
 > Can you make it upscale the uploaded image so the face recognition works better?**
 
-Claude had the app upscale after upload using `cv2.resize()`. ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-recognition-app-with-upscaling)) but simple upscaling didn't do too much for accuracy, so maybe Claude knows about a "smart" way of sharpening the upscaled image?
+Claude had the app upscale after upload using `cv2.resize()`. ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-recognition-app-with-upscaling)) but simple upscaling didn't do too much for accuracy, so maybe Claude knows about a "smart" way of sharpening the upscaled image?
 
 > **Me: What about using a neural net to upscale?**
 
-Claude mentioned that this approach is well known ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-recognition-app-with-neural-network-upscaling)), it's called [super-resolution](https://en.wikipedia.org/wiki/Super-resolution_imaging) and OpenCV has a module called [DNN Super Resolution](https://towardsdatascience.com/deep-learning-based-super-resolution-with-opencv-4fd736678066) which could be used with the ESPCN model (mentioned in the above article)... since I was more interested in testing the next iteration, and Claude had impressed me so far with its ability to recommend and implement these approaches, I just took the code and ran a test.
+Claude mentioned that this approach is well known ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-recognition-app-with-neural-network-upscaling)), it's called [super-resolution](https://en.wikipedia.org/wiki/Super-resolution_imaging) and OpenCV has a module called [DNN Super Resolution](https://towardsdatascience.com/deep-learning-based-super-resolution-with-opencv-4fd736678066) which could be used with the ESPCN model (mentioned in the above article)... since I was more interested in testing the next iteration, and Claude had impressed me so far with its ability to recommend and implement these approaches, I just took the code and ran a test.
 
 > **Me: I get`AttributeError: module 'cv2' has no attribute 'dnn_superres'`**
 
@@ -197,7 +197,7 @@ We've gone from counting 21 bodies with `YOLOv5` to 47 faces with `face_recognit
 
 ## Another change of approach: MTCNN
 
-At coffee the following Friday a fellow swimmer suggested trying [MTCNN](https://medium.com/@saranshrajput/face-detection-using-mtcnn-f3948e5d1acb). It had me curious... ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-detection-app-with-mtcnn-and-enhanced-upscaling))
+At coffee the following Friday a fellow swimmer suggested trying [MTCNN](https://medium.com/@saranshrajput/face-detection-using-mtcnn-f3948e5d1acb). It had me curious... ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#flask-face-detection-app-with-mtcnn-and-enhanced-upscaling))
 
 > **Me: Can you make it do the face detection with MTCNN?**
 
@@ -213,12 +213,12 @@ From 21 to 47 to 89, and now the app recognizes 135 faces, almost all of them - 
 
 ## One last thing.. blurring faces
 
-Posting people's faces online seems like a bad idea. This one was handled deftly and easily by Claude ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#blurring-faces-in-flask-app))
+Posting people's faces online seems like a bad idea. This one was handled deftly and easily by Claude ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#blurring-faces-in-flask-app))
 
 > **Me: I have this Flask app, can the insides of the boxes please be blurred so the faces aren't recognizable?  
 > (...)**
 
-Done. ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9b8f2b5d4f11#blurring-faces-in-flask-app)) After a couple more iterations and some more editing of the HTML template we have a simply fantastic result - solid recognition, numbered bounding boxes, and blurred faces.
+Done. ([chat transcript](https://gist.github.com/cadamsdotcom/f4d25d6a7d79987fdd8d9b8f2b5d4f11#blurring-faces-in-flask-app)) After a couple more iterations and some more editing of the HTML template we have a simply fantastic result - solid recognition, numbered bounding boxes, and blurred faces.
 
 <div class="kg-width-full">
 <img src="/assets/images/2024/10/Screenshot-2024-10-25-at-5.14.32-PM-1.jpeg"/>
@@ -226,7 +226,7 @@ Done. ([chat transcript](https://gist.github.com/thecadams/f4d25d6a7d79987fdd8d9
 
 ## Future directions
 
-I'm proud of how this turned out. The app's source is [on Github](https://github.com/thecadams/HowManySwimmers) for anyone to modify. Hats off to Anthropic's team for a great product.
+I'm proud of how this turned out. The app's source is [on Github](https://github.com/cadamsdotcom/HowManySwimmers) for anyone to modify. Hats off to Anthropic's team for a great product.
 
 The app could be deployed somewhere like [Vercel](https://vercel.com), but upscaling and processing images is CPU-intensive. And it's only needed once a week. So for the foreseeable future I plan to keep firing it up locally, getting a count, then killing it until next week. It could be automated but someone still needs to upload the image.
 

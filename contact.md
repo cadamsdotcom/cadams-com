@@ -9,7 +9,7 @@ Hi! Hopefully you already know all [about me](/about)!
 Assuming you've read all of that, here is how to reach me:
 
   * via email: chris AT cadams DOT com
-  * via [LinkedIn](https://linkedin.com/in/cadamsau)
+  * via [LinkedIn](https://linkedin.com/in/cadamsdotcom)
   * via this form
 
 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfasVbjfJg7MsEN__Ypae7pm9yQN0s3k5EGJrxvqfeehnjDTA/viewform?embedded=true" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
