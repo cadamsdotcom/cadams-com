@@ -1,0 +1,27 @@
+---
+date: '2026-02-27 15:54:01'
+layout: post
+title: CodeLeash: framework for quality agent development, NOT an orchestrator)
+cover: assets/images/2026/02/codeleash.jpg
+author: cadams
+tags: [technology]
+---
+tl;dr check it out here: [https://codeleash.dev](https://codeleash.dev)
+
+I built my first project using an LLM in mid-2024. I've been excited ever since. But of course, at some point it all turns into a mess.
+
+You see, software is an intricate interwoven collection of tiny details. Good software gets many details right; and does not regress as it gains functionality.
+
+My bootstrapped startup, ApprovIQ (https://approviq.com) is trying to break into a mature market with multiple fully featured competitors. I need to get the details right: MVP quality won't sell. So I opted for Test-Driven Development, the classic red/green/refactor. Writing tests that fail - then making them pass - forces you to document in your tests every decision that went into the code. This makes it a universal way to construct software. With TDD, you don't need to hold context in your head about how things should work. Your software can work as intricate as you like and still be resilient to regression. Bug in a third-party dependency? Get a failing test, make it pass. Anyone who undoes your fix will see the test fail.
+
+At the same time as doing TDD with Claude Code, I also discovered that agents obey all instructions put in front of them! I started to add super-advanced linting: architectural guideline enforcement, scripts that walk the codebase's AST and enforce my architecture, I even added one that enforces only our brand colors in our codebase. That one is great because it prevents agents from picking ugly "AI generic" colors in frontends. Because the check blocks commits with ugly colors, our product looks way less like an AI built it - without human involvement.
+
+In time I was no longer in the details of what the agent was building and was mostly supervising the TDD process while it implemented our product. Once that got tedious, I automated that into a state machine too.
+
+All the ideas that now allow me build at high quality are in this repo.
+
+This isn't your weekend vibe project. I've spent months refining the framework. There are rough edges but it's better out and rough than in hiding until perfect.
+
+Hopefully some ideas here help you or your agent. I recommend cloning it and letting your agent have a look! And if you want to contribute please to - and if you want to get in touch, contact details in my profile.
+
+You can see it here: [https://codeleash.dev](https://codeleash.dev)
