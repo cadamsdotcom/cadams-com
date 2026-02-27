@@ -1,7 +1,7 @@
 ---
 date: '2026-02-27 15:54:01'
 layout: post
-title: CodeLeash: framework for quality agent development, NOT an orchestrator)
+title: "CodeLeash: framework for quality agent development, NOT an orchestrator)"
 cover: assets/images/2026/02/codeleash.jpg
 author: cadams
 tags: [technology]
