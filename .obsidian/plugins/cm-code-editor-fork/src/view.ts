@@ -6,7 +6,7 @@ import { findNext, findPrevious, openSearchPanel, selectNextOccurrence } from '@
 import { resolveLanguage } from './languages';
 import { applySettings, buildExtensions, createCompartments } from './extensions';
 import type { EditorCompartments } from './extensions';
-import { checkTextFile } from './text-file';
+import { checkTextFile, detectLineEnding } from './text-file';
 import type { PluginSettings } from './settings';
 import type CodeEditorPlugin from './main';
 
@@ -29,6 +29,9 @@ export class CodeEditorView extends TextFileView {
 	// Set when the open file isn't text (or is too big), so nothing is shown or saved.
 	private notTextReason: string | null = null;
 	private notTextEl: HTMLElement | null = null;
+	// CodeMirror stores lines without their endings; write them back the way
+	// the file had them, so CRLF files aren't rewritten as LF.
+	private lineEnding: '\n' | '\r\n' = '\n';
 
 	constructor(leaf: WorkspaceLeaf, plugin: CodeEditorPlugin) {
 		super(leaf);
@@ -235,11 +238,12 @@ export class CodeEditorView extends TextFileView {
 	}
 
 	getViewData(): string {
-		return this.editor?.state.doc.toString() ?? '';
+		return this.editor?.state.doc.sliceString(0, undefined, this.lineEnding) ?? '';
 	}
 
 	setViewData(data: string, clear: boolean): void {
 		if (!this.editor) return;
+		this.lineEnding = detectLineEnding(data);
 
 		if (clear) {
 			this.compartments = createCompartments();
@@ -257,7 +261,7 @@ export class CodeEditorView extends TextFileView {
 				parent: this.contentEl,
 			});
 		} else {
-			const current = this.editor.state.doc.toString();
+			const current = this.getViewData();
 			if (current !== data) {
 				this.editor.dispatch({
 					changes: { from: 0, to: this.editor.state.doc.length, insert: data },

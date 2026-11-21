@@ -71,6 +71,10 @@ The editor behaves like the code editors you already know:
 
 Changes save automatically, like everything else in Obsidian.
 
+### Line endings
+
+Files keep their line endings. A file with Windows-style CRLF endings is saved with CRLF, and one with LF is saved with LF, so saving doesn't mark every line as changed in Git. A file with a mix of both is saved with whichever it has more of.
+
 ## Search and replace
 
 Press Ctrl/Cmd+F to open the search bar at the bottom of the editor. If text is selected, it's used as the search.
@@ -132,6 +136,8 @@ Default: `ts, js, py, css, c, cpp, go, rs, java, lua, php, json, yaml, toml, sh,
 Opens any file that no other view in Obsidian handles in the code editor, as long as it's text. This covers extensions not on your **File extensions** list, like `yml` or `lock`, and files with no extension at all, like `CNAME`, `Gemfile` or `LICENSE`.
 
 A file counts as text if the whole file is valid UTF-8 with no NUL bytes. Obsidian reads and saves files as UTF-8, so a file in any other encoding, like Latin-1 or UTF-16, would be garbled and then damaged by the first save. Those files, binary files, and files over 10 MB show a notice instead of opening, with an **Open in another app** button where Obsidian supports it. A file that wasn't opened is never saved.
+
+What opens: UTF-8 (including plain ASCII and UTF-8 with a byte-order mark). What doesn't: UTF-16, UTF-32, Latin-1 or Windows-1252 files with accented characters, and other legacy encodings.
 
 Turn this off to go back to Obsidian's default, where it hands such files to another app.
 

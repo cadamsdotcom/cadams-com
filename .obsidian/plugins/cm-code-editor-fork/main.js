@@ -18879,6 +18879,11 @@ async function checkTextFile(app, file) {
   const bytes = new Uint8Array(await app.vault.readBinary(file));
   return isUtf8Text(bytes) ? null : "isn't a UTF-8 text file";
 }
+function detectLineEnding(text) {
+  const crlf = text.split("\r\n").length - 1;
+  const lf = text.split("\n").length - 1 - crlf;
+  return crlf > lf ? "\r\n" : "\n";
+}
 
 // src/view.ts
 var VIEW_TYPE = "code-editor";
@@ -18891,6 +18896,9 @@ var CodeEditorView = class extends import_obsidian3.TextFileView {
     // Set when the open file isn't text (or is too big), so nothing is shown or saved.
     this.notTextReason = null;
     this.notTextEl = null;
+    // CodeMirror stores lines without their endings; write them back the way
+    // the file had them, so CRLF files aren't rewritten as LF.
+    this.lineEnding = "\n";
     this.plugin = plugin;
     this.scope = new import_obsidian3.Scope(this.app.scope);
   }
@@ -19068,11 +19076,12 @@ var CodeEditorView = class extends import_obsidian3.TextFileView {
   }
   getViewData() {
     var _a2, _b2;
-    return (_b2 = (_a2 = this.editor) == null ? void 0 : _a2.state.doc.toString()) != null ? _b2 : "";
+    return (_b2 = (_a2 = this.editor) == null ? void 0 : _a2.state.doc.sliceString(0, void 0, this.lineEnding)) != null ? _b2 : "";
   }
   setViewData(data2, clear) {
     var _a2, _b2;
     if (!this.editor) return;
+    this.lineEnding = detectLineEnding(data2);
     if (clear) {
       this.compartments = createCompartments();
       this.editor.destroy();
@@ -19091,7 +19100,7 @@ var CodeEditorView = class extends import_obsidian3.TextFileView {
         parent: this.contentEl
       });
     } else {
-      const current = this.editor.state.doc.toString();
+      const current = this.getViewData();
       if (current !== data2) {
         this.editor.dispatch({
           changes: { from: 0, to: this.editor.state.doc.length, insert: data2 }
