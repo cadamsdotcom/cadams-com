@@ -1,0 +1,60 @@
+# CM Code Editor - Obsidian Plugin
+
+## Overview
+
+CodeMirror 6-based code file editor plugin for Obsidian. Opens registered file extensions in a CM6 editor view instead of Obsidian's default text view.
+
+## Architecture
+
+- `src/main.ts`: Plugin entry point. Registers the view, settings tab, commands, and file menu items.
+- `src/view.ts`: `CodeEditorView` extends `TextFileView`. Creates and manages the CM6 `EditorView`. Handles file loading, saving, Ctrl+scroll zoom, and search hotkeys via Obsidian `Scope`.
+- `src/extensions.ts`: CM6 extension builder. Uses **Compartments** for dynamic reconfiguration of: language, line numbers, folding, wrap, font, theme, tab size, indent guides.
+- `src/settings.ts`: `PluginSettings` interface, defaults, theme options map, and settings tab using `getSettingDefinitions()` (Obsidian 1.13+ declarative API).
+- `src/languages.ts`: Maps file extensions to CM6 language support. Includes modern language packages and legacy stream-based languages (shell, ruby, lua, toml, r, powershell, dockerfile, swift, csharp).
+- `src/search-panel.ts`: Custom CM6 search panel (find, replace, match case, regex, whole word, select all) built with Obsidian DOM helpers. Passed to `search({ createPanel })` in `extensions.ts`.
+- `src/folder-suggest.ts`: `FolderSuggest` extending `AbstractInputSuggest` for fuzzy folder search in settings.
+- `src/create-modal.ts`: Modal for creating new code files with extension dropdown.
+- `src/rename-modal.ts`: Modal for renaming a file including its extension (Obsidian's inline title and explorer rename only edit the basename). Reopens affected leaves when the new extension belongs to a different view.
+- `styles.css`: Obsidian CSS variable mappings for `.tok-*` syntax classes (used when theme is "Obsidian default").
+
+## Key patterns
+
+- **Compartments** allow live-updating settings without rebuilding editor state. Each dynamic setting has a compartment in `EditorCompartments`, a function that returns an `Extension`, and is wired into both `buildExtensions()` and `applySettings()`.
+- **Theme switching**: when theme is `''` (Obsidian default), the theme compartment contains `syntaxHighlighting(classHighlighter)` which applies `.tok-*` CSS classes styled by `styles.css`. When a CM6 theme is selected, `classHighlighter` is swapped out and the theme extension takes over.
+- **Settings tab** uses `getSettingDefinitions()` (not `display()`). Custom controls like folder suggest use `SettingDefinitionRender` with a `render` callback.
+- **Search hotkeys** (Cmd+F, Cmd+G, F3, and Cmd+D for select next occurrence, which Obsidian binds to "Delete paragraph") use `this.scope = new Scope(this.app.scope)` on the view, which overrides Obsidian's default hotkeys (e.g. graph view's Cmd+G) when the code editor is active.
+- **Tab indentation** uses a custom Tab/Shift-Tab keybinding that reads `EditorState.tabSize` (shared facet from `@codemirror/state`) instead of `indentWithTab` from `@codemirror/commands`, because `indentWithTab` reads `indentUnit` from Obsidian's `@codemirror/language`, which is a different facet instance than the one bundled in this plugin.
+- **Tab title vs. header title**: `getDisplayText()` returns the full file name for the tab, but `setState()` resets the view header title (`titleEl`) to `file.basename`. Obsidian's inline title rename appends the extension to the typed text, so a full name there produces `a.md.txt`.
+- **Delete handling**: `FileView.onDelete` swaps in the empty view via `leaf.open(null)`, which does not refresh the tab header. `CodeEditorView.onDelete` calls `setViewState({ type: 'empty' })` afterwards to force the update.
+- **Extension registration**: `plugin.registerExtension()` tracks what this plugin claimed in `registeredExtensions`. Startup registers every extension in settings. The rename modal registers any added since then when they are used.
+- **Internal APIs** (declared via `declare module 'obsidian'` augmentation, not in the public typings): `FileView.titleEl`, `FileView.onDelete` (`view.ts`); `App.viewRegistry.isExtensionRegistered`, `App.setting.open/openTabById` (`rename-modal.ts`, both optional with fallbacks). Recheck these after Obsidian updates.
+- **`@codemirror/language` must NOT be external** in esbuild. It is intentionally bundled because legacy stream languages (shell, ruby, lua, toml, etc.) use `StreamLanguage` which Obsidian's runtime may not expose. The tradeoff is a split `indentUnit` facet, which is why Tab uses the custom keybinding above.
+
+## Build
+
+```bash
+npm run build    # tsc + esbuild
+npm run dev      # esbuild watch mode
+npm run lint     # eslint with eslint-plugin-obsidianmd
+```
+
+## Documentation
+
+- `README.md`: short pitch, install steps, quick start. Links to the guide.
+- `USER-GUIDE.md`: full user docs covering features, shortcuts, every setting, supported languages, troubleshooting. Update it when user-facing behavior changes.
+- Write docs in plain, direct prose. No em-dashes.
+
+## Dependencies of note
+
+- `@uiw/codemirror-themes-all`: 45 CM6 syntax themes (requires `@babel/runtime`)
+- `@replit/codemirror-indentation-markers`: indent guide lines
+- `@codemirror/state` and `@codemirror/view` are pinned via `overrides` in `package.json`
+
+## Obsidian conventions
+
+- Uses Obsidian CSS variables for all styling (rule 32)
+- Uses `AbstractInputSuggest` for folder suggest (rule 26)
+- Uses `registerEvent()`/`registerDomEvent()` for cleanup (rule 6)
+- Settings use sentence case (rule 11)
+- No default hotkeys (rule 16)
+- Uses `normalizePath()` for user paths (rule 22)
