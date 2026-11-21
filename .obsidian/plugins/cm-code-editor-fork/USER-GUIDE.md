@@ -127,6 +127,16 @@ After you add or remove extensions, reload the plugin so Obsidian picks up the c
 
 Default: `ts, js, py, css, c, cpp, go, rs, java, lua, php, json, yaml, toml, sh, html, xml, sql, rb`
 
+#### Open all text files
+
+Opens any file that no other view in Obsidian handles in the code editor, as long as it's text. This covers extensions not on your **File extensions** list, like `yml` or `lock`, and files with no extension at all, like `CNAME`, `Gemfile` or `LICENSE`.
+
+A file counts as text if the whole file is valid UTF-8 with no NUL bytes. Obsidian reads and saves files as UTF-8, so a file in any other encoding, like Latin-1 or UTF-16, would be garbled and then damaged by the first save. Those files, binary files, and files over 10 MB show a notice instead of opening, with an **Open in another app** button where Obsidian supports it. A file that wasn't opened is never saved.
+
+Turn this off to go back to Obsidian's default, where it hands such files to another app.
+
+Default: on
+
 #### Default folder
 
 Where **Create code file** puts new files. Start typing to search your folders. Leave it empty to use the vault root. **Create code file here** in the file explorer ignores this and uses the folder you clicked.
@@ -190,7 +200,9 @@ Obsidian always opens `.md` and `.svg` files itself, so those can't be edited he
 
 ## Troubleshooting
 
-**A file opens somewhere else, or not at all.** Check that its extension is on your **File extensions** list, then reload the plugin.
+**A file opens somewhere else, or not at all.** Check that its extension is on your **File extensions** list, then reload the plugin. With **Open all text files** on, files nothing else claims open here too.
+
+**"isn't a UTF-8 text file" or "is larger than 10 MB".** The file was left closed so it can't be damaged. See [Open all text files](#open-all-text-files).
 
 **"These extensions are already opened by Obsidian or another plugin."** Only one view can own an extension, and whoever loads first gets it. The code editor skips the ones it can't have and keeps working. To use the code editor for one of them, disable it in the other plugin (for example, Embed HTML takes `html`) and reload. Obsidian always keeps `md` for notes and `svg` for images, so those can't move to the code editor. To stop the notice, remove those extensions from **File extensions**.
 

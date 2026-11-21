@@ -18863,12 +18863,11 @@ function applySettings(editor, settings, compartments) {
 }
 
 // src/text-file.ts
-var SNIFF_BYTES = 8192;
 var MAX_BYTES = 10 * 1024 * 1024;
-function looksLikeText(bytes, truncated) {
+function isUtf8Text(bytes) {
   if (bytes.includes(0)) return false;
   try {
-    new TextDecoder("utf-8", { fatal: true }).decode(bytes, { stream: truncated });
+    new TextDecoder("utf-8", { fatal: true }).decode(bytes);
     return true;
   } catch (e) {
     return false;
@@ -18878,7 +18877,7 @@ async function checkTextFile(app, file) {
   if (file.stat.size === 0) return null;
   if (file.stat.size > MAX_BYTES) return "is larger than 10 MB";
   const bytes = new Uint8Array(await app.vault.readBinary(file));
-  return looksLikeText(bytes.subarray(0, SNIFF_BYTES), bytes.length > SNIFF_BYTES) ? null : "isn't a text file";
+  return isUtf8Text(bytes) ? null : "isn't a UTF-8 text file";
 }
 
 // src/view.ts
