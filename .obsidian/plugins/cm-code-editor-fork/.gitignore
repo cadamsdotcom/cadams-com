@@ -6,7 +6,7 @@ npm-debug.log*
 node_modules/
 
 # Build output
-# main.js is committed so the plugin installs straight from the repo
+# main.js is committed so the plugin installs by pulling the repo
 *.js.map
 
 # OS files
