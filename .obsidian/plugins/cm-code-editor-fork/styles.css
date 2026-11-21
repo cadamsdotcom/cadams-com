@@ -268,3 +268,24 @@
 .code-editor-create-modal-submit {
 	width: 100%;
 }
+
+.code-editor-view .cm-editor {
+	min-height: 0;
+}
+
+.code-editor-not-text {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--size-4-3);
+	padding: var(--size-4-4);
+	color: var(--text-muted);
+}
+
+/* While the iOS keyboard is up, the view ends exactly at the keyboard's top
+   edge (height measured in view.ts), instead of being shrunk twice. */
+.code-editor-view.code-editor-keyboard-open {
+	height: var(--code-editor-visible-height);
+	max-height: none;
+	padding-bottom: 0;
+}

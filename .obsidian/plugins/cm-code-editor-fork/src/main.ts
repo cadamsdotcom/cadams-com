@@ -5,6 +5,13 @@ import { CodeEditorView, VIEW_TYPE } from './view';
 import { CreateCodeFileModal } from './create-modal';
 import { RenameFileModal } from './rename-modal';
 
+// Internal: Obsidian's map of file extensions to the view types that open them.
+interface ViewRegistry {
+	getTypeByExtension(extension: string): string | undefined;
+	isExtensionRegistered(extension: string): boolean;
+	registerExtensions(extensions: string[], type: string): void;
+}
+
 export default class CodeEditorPlugin extends Plugin {
 	settings: PluginSettings = DEFAULT_SETTINGS;
 	registeredExtensions = new Set<string>();
@@ -23,6 +30,8 @@ export default class CodeEditorPlugin extends Plugin {
 		}
 
 		this.addSettingTab(new CodeEditorSettingsTab(this.app, this));
+
+		this.claimUnhandledExtensions();
 
 		this.addCommand({
 			id: 'create-file',
@@ -80,6 +89,40 @@ export default class CodeEditorPlugin extends Plugin {
 		} catch {
 			return false;
 		}
+	}
+
+	// "Open all text files": when no view is registered for an extension
+	// (including files with no extension), report this editor as its view, so
+	// Obsidian opens the file here instead of handing it to the OS. The view
+	// then checks the content and refuses binary files. Uses Obsidian's
+	// internal view registry; registrations themselves are left untouched.
+	private claimUnhandledExtensions(): void {
+		const registry = this.app.viewRegistry as ViewRegistry | undefined;
+		if (!registry?.getTypeByExtension || !registry.isExtensionRegistered || !registry.registerExtensions) return;
+		const original = {
+			getTypeByExtension: registry.getTypeByExtension.bind(registry) as ViewRegistry['getTypeByExtension'],
+			isExtensionRegistered: registry.isExtensionRegistered.bind(registry) as ViewRegistry['isExtensionRegistered'],
+			registerExtensions: registry.registerExtensions.bind(registry) as ViewRegistry['registerExtensions'],
+		};
+		const enabled = (): boolean => this.settings.openAllTextFiles;
+		// While any plugin registers extensions, answer truthfully so real
+		// registrations (ours and other plugins') still work.
+		let registering = 0;
+		registry.registerExtensions = (extensions: string[], type: string): void => {
+			registering++;
+			try {
+				original.registerExtensions(extensions, type);
+			} finally {
+				registering--;
+			}
+		};
+		registry.getTypeByExtension = (extension: string): string | undefined => {
+			const type = original.getTypeByExtension(extension);
+			return type || registering > 0 || !enabled() ? type : VIEW_TYPE;
+		};
+		registry.isExtensionRegistered = (extension: string): boolean =>
+			registering > 0 || !enabled() ? original.isExtensionRegistered(extension) : true;
+		this.register(() => Object.assign(registry, original));
 	}
 
 	async loadSettings(): Promise<void> {

@@ -5,6 +5,7 @@ import { FolderSuggest } from './folder-suggest';
 
 export interface PluginSettings {
 	extensions: string[];
+	openAllTextFiles: boolean;
 	lineNumbers: boolean;
 	codeFolding: boolean;
 	wordWrap: boolean;
@@ -18,6 +19,7 @@ export interface PluginSettings {
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	extensions: ['ts', 'js', 'py', 'css', 'c', 'cpp', 'go', 'rs', 'java', 'lua', 'php', 'json', 'yaml', 'toml', 'sh', 'html', 'xml', 'sql', 'rb'],
+	openAllTextFiles: true,
 	lineNumbers: true,
 	codeFolding: true,
 	wordWrap: false,
@@ -105,7 +107,7 @@ export class CodeEditorSettingsTab extends PluginSettingTab {
 		} else {
 			const s = this.plugin.settings;
 			const k = key as keyof PluginSettings;
-			if (k === 'lineNumbers' || k === 'codeFolding' || k === 'wordWrap' || k === 'indentGuides') {
+			if (k === 'lineNumbers' || k === 'codeFolding' || k === 'wordWrap' || k === 'indentGuides' || k === 'openAllTextFiles') {
 				s[k] = value as boolean;
 			} else if (k === 'tabSize') {
 				s[k] = Number(value);
@@ -134,6 +136,15 @@ export class CodeEditorSettingsTab extends PluginSettingTab {
 							defaultValue: DEFAULT_SETTINGS.extensions.join(', '),
 							placeholder: 'ts, js, py, css, go, rs',
 							rows: 3,
+						},
+					},
+					{
+						name: 'Open all text files',
+						desc: "Open any file Obsidian has no viewer for in this editor, if it's text. Binary files show a notice instead.",
+						control: {
+							type: 'toggle',
+							key: 'openAllTextFiles',
+							defaultValue: DEFAULT_SETTINGS.openAllTextFiles,
 						},
 					},
 					{

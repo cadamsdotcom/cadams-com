@@ -1,4 +1,4 @@
-import { Scope, TextFileView } from 'obsidian';
+import { Platform, Scope, TextFileView } from 'obsidian';
 import type { TFile, ViewStateResult, WorkspaceLeaf } from 'obsidian';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
@@ -6,6 +6,7 @@ import { findNext, findPrevious, openSearchPanel, selectNextOccurrence } from '@
 import { resolveLanguage } from './languages';
 import { applySettings, buildExtensions, createCompartments } from './extensions';
 import type { EditorCompartments } from './extensions';
+import { checkTextFile } from './text-file';
 import type { PluginSettings } from './settings';
 import type CodeEditorPlugin from './main';
 
@@ -25,6 +26,9 @@ export class CodeEditorView extends TextFileView {
 	private compartments: EditorCompartments = createCompartments();
 	private plugin: CodeEditorPlugin;
 	private suppressSave = false;
+	// Set when the open file isn't text (or is too big), so nothing is shown or saved.
+	private notTextReason: string | null = null;
+	private notTextEl: HTMLElement | null = null;
 
 	constructor(leaf: WorkspaceLeaf, plugin: CodeEditorPlugin) {
 		super(leaf);
@@ -137,6 +141,74 @@ export class CodeEditorView extends TextFileView {
 			void this.plugin.saveSettings();
 			this.plugin.applySettingsToOpenEditors();
 		}, { capture: true, passive: false });
+
+		if (Platform.isMobile) this.fitAboveKeyboard();
+	}
+
+	// iOS 27's keyboard leaves the view's height reduced twice (once by the
+	// keyboard, once more on top), squashing the editor. While the keyboard is
+	// up, size the view to end exactly at the keyboard's top edge instead.
+	private fitAboveKeyboard(): void {
+		const vv = window.visualViewport;
+		if (!vv) return;
+		const el = this.contentEl;
+		const fit = () => {
+			const visibleBottom = vv.offsetTop + vv.height;
+			const fullHeight = Math.max(window.innerHeight, activeDocument.documentElement.clientHeight);
+			const keyboardOpen = fullHeight - visibleBottom > 150;
+			el.toggleClass('code-editor-keyboard-open', keyboardOpen);
+			if (!keyboardOpen) {
+				el.setCssProps({ '--code-editor-visible-height': '' });
+				return;
+			}
+			const height = Math.max(100, Math.floor(visibleBottom - el.getBoundingClientRect().top));
+			el.setCssProps({ '--code-editor-visible-height': `${height}px` });
+		};
+		vv.addEventListener('resize', fit);
+		vv.addEventListener('scroll', fit);
+		this.registerDomEvent(window, 'resize', fit);
+		this.registerDomEvent(el, 'focusin', () => window.setTimeout(fit, 50));
+		const observer = new ResizeObserver(() => fit());
+		observer.observe(el);
+		this.register(() => {
+			vv.removeEventListener('resize', fit);
+			vv.removeEventListener('scroll', fit);
+			observer.disconnect();
+		});
+	}
+
+	async onLoadFile(file: TFile): Promise<void> {
+		// Files opened because of "Open all text files" (no extension registered
+		// for them) are checked first so binary files are never loaded or saved.
+		this.notTextReason = null;
+		if (!this.plugin.registeredExtensions.has(file.extension.toLowerCase())) {
+			this.notTextReason = await checkTextFile(this.app, file);
+		}
+		this.showNotText(file);
+		if (this.notTextReason) return;
+		await super.onLoadFile(file);
+	}
+
+	async save(clear?: boolean): Promise<void> {
+		if (this.notTextReason) return;
+		await super.save(clear);
+	}
+
+	private showNotText(file: TFile): void {
+		this.notTextEl?.remove();
+		this.notTextEl = null;
+		const editorEl = this.contentEl.querySelector<HTMLElement>('.cm-editor');
+		if (!this.notTextReason) {
+			editorEl?.show();
+			return;
+		}
+		editorEl?.hide();
+		this.notTextEl = this.contentEl.createDiv({ cls: 'code-editor-not-text', text: `${file.name} ${this.notTextReason}, so it wasn't opened for editing.` });
+		const app = this.app;
+		if (app.openWithDefaultApp) {
+			this.notTextEl.createEl('button', { text: 'Open in another app' })
+				.addEventListener('click', () => void app.openWithDefaultApp?.(file.path));
+		}
 	}
 
 	async onClose(): Promise<void> {

@@ -1,3 +1,10 @@
+> **Fork of [gapmiss/cm-code-editor](https://github.com/gapmiss/cm-code-editor) at 0.1.11 (`77c0f93`).**
+> Plugin id `cm-code-editor-fork`, so the community store never overwrites it. Changes:
+> - On iOS, the editor ends at the keyboard's top edge instead of being squashed (`fitAboveKeyboard` in `src/view.ts`).
+> - "Open all text files" setting (on by default): any file Obsidian has no viewer for, including files with no extension, opens here if it's text. Binary files and files over 10 MB show a notice and are never saved (`claimUnhandledExtensions` in `src/main.ts`, `src/text-file.ts`).
+>
+> Build: `npm install && npm run build`. The built `main.js` is committed so the plugin installs by pulling the repo.
+
 # CM Code Editor
 
 Edit code files in your [Obsidian](https://obsidian.md) vault with syntax highlighting, code folding, search and replace, and autocompletion. Built on [CodeMirror 6](https://codemirror.net/).

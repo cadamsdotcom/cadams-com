@@ -11,6 +11,8 @@ declare module 'obsidian' {
 		viewRegistry?: {
 			isExtensionRegistered(extension: string): boolean;
 		};
+		// Internal: hands a file to the OS (share sheet on mobile).
+		openWithDefaultApp?(path: string): Promise<void> | void;
 		// Internal: the settings modal.
 		setting?: {
 			open(): void;
