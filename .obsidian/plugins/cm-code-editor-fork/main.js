@@ -18887,6 +18887,36 @@ function detectLineEnding(text) {
 
 // src/view.ts
 var VIEW_TYPE = "code-editor";
+var keyboardBaseline = { width: 0, height: 0 };
+var layoutLog = [];
+function recordLayout(reason, el, vv, keyboardOpen, applied) {
+  var _a2;
+  const px = (n) => Math.round(n);
+  const describe = (node) => {
+    const r2 = node.getBoundingClientRect();
+    const cs = getComputedStyle(node);
+    const cls = (typeof node.className === "string" ? node.className : "").split(" ").slice(0, 3).join(".");
+    return `${node.tagName.toLowerCase()}.${cls} top=${px(r2.top)} bottom=${px(r2.bottom)} h=${px(r2.height)} css(h=${cs.height} pb=${cs.paddingBottom} mb=${cs.marginBottom} ov=${cs.overflowY})`;
+  };
+  const chain2 = [];
+  for (let node = el, i = 0; node && i < 8; node = node.parentElement, i++) chain2.push(describe(node));
+  const cm = el.querySelector(".cm-editor");
+  const body = activeDocument.body;
+  const lines = [
+    `[${(/* @__PURE__ */ new Date()).toISOString().slice(11, 19)}] ${reason} keyboardOpen=${keyboardOpen} applied=${applied != null ? applied : "none"}`,
+    `vv h=${px(vv.height)} top=${px(vv.offsetTop)} w=${px(vv.width)} baseline=${px(keyboardBaseline.height)} inner=${window.innerHeight} client=${activeDocument.documentElement.clientHeight} screen=${screen.width}x${screen.height}`,
+    `focus-in-editor=${el.contains(activeDocument.activeElement)} body=${body.className.split(" ").filter((c2) => /keyboard|mobile|phone|tablet|ios/.test(c2)).join(" ")} --keyboard-height=${getComputedStyle(body).getPropertyValue("--keyboard-height").trim() || "unset"}`,
+    cm ? `cm-editor ${describe(cm)}` : "cm-editor none",
+    ...chain2
+  ];
+  const entry = lines.join("\n");
+  if (((_a2 = layoutLog[layoutLog.length - 1]) == null ? void 0 : _a2.split("\n").slice(1).join("\n")) === lines.slice(1).join("\n")) return;
+  layoutLog.push(entry);
+  if (layoutLog.length > 15) layoutLog.shift();
+}
+function layoutDiagnostics() {
+  return layoutLog.length ? layoutLog.join("\n\n") : "No layout recorded yet. Open a file in the code editor first.";
+}
 var CodeEditorView = class extends import_obsidian3.TextFileView {
   constructor(leaf, plugin) {
     super(leaf);
@@ -18996,31 +19026,44 @@ var CodeEditorView = class extends import_obsidian3.TextFileView {
   // iOS 27's keyboard leaves the view's height reduced twice (once by the
   // keyboard, once more on top), squashing the editor. While the keyboard is
   // up, size the view to end exactly at the keyboard's top edge instead.
+  //
+  // The keyboard is detected by the visual viewport being much shorter than
+  // the tallest it has been at this width. Comparing against
+  // window.innerHeight doesn't work when the web view itself shrinks with
+  // the keyboard.
   fitAboveKeyboard() {
     const vv = window.visualViewport;
     if (!vv) return;
     const el = this.contentEl;
-    const fit = () => {
-      const visibleBottom = vv.offsetTop + vv.height;
-      const fullHeight = Math.max(window.innerHeight, activeDocument.documentElement.clientHeight);
-      const keyboardOpen = fullHeight - visibleBottom > 150;
-      el.toggleClass("code-editor-keyboard-open", keyboardOpen);
-      if (!keyboardOpen) {
-        el.setCssProps({ "--code-editor-visible-height": "" });
-        return;
+    const fit = (reason) => {
+      if (Math.abs(vv.width - keyboardBaseline.width) > 1) {
+        keyboardBaseline.width = vv.width;
+        keyboardBaseline.height = 0;
       }
-      const height = Math.max(100, Math.floor(visibleBottom - el.getBoundingClientRect().top));
-      el.setCssProps({ "--code-editor-visible-height": `${height}px` });
+      keyboardBaseline.height = Math.max(keyboardBaseline.height, vv.height);
+      const visibleBottom = vv.offsetTop + vv.height;
+      const keyboardOpen = keyboardBaseline.height - vv.height > 150;
+      el.toggleClass("code-editor-keyboard-open", keyboardOpen);
+      let height = null;
+      if (keyboardOpen) {
+        height = Math.max(100, Math.floor(visibleBottom - el.getBoundingClientRect().top));
+        el.setCssProps({ "--code-editor-visible-height": `${height}px` });
+      } else {
+        el.setCssProps({ "--code-editor-visible-height": "" });
+      }
+      recordLayout(reason, el, vv, keyboardOpen, height);
     };
-    vv.addEventListener("resize", fit);
-    vv.addEventListener("scroll", fit);
-    this.registerDomEvent(window, "resize", fit);
-    this.registerDomEvent(el, "focusin", () => window.setTimeout(fit, 50));
-    const observer = new ResizeObserver(() => fit());
+    const onViewport = () => fit("viewport");
+    vv.addEventListener("resize", onViewport);
+    vv.addEventListener("scroll", onViewport);
+    this.registerDomEvent(window, "resize", () => fit("window"));
+    this.registerDomEvent(el, "focusin", () => window.setTimeout(() => fit("focus"), 50));
+    const observer = new ResizeObserver(() => fit("resize-observer"));
     observer.observe(el);
+    fit("open");
     this.register(() => {
-      vv.removeEventListener("resize", fit);
-      vv.removeEventListener("scroll", fit);
+      vv.removeEventListener("resize", onViewport);
+      vv.removeEventListener("scroll", onViewport);
       observer.disconnect();
     });
   }
@@ -19393,6 +19436,19 @@ var CodeEditorPlugin = class extends import_obsidian6.Plugin {
     }
     this.addSettingTab(new CodeEditorSettingsTab(this.app, this));
     this.claimUnhandledExtensions();
+    this.addCommand({
+      id: "copy-layout-diagnostics",
+      name: "Copy layout diagnostics",
+      callback: async () => {
+        const text = layoutDiagnostics();
+        try {
+          await navigator.clipboard.writeText(text);
+          new import_obsidian6.Notice("Layout diagnostics copied to the clipboard.");
+        } catch (e) {
+          new import_obsidian6.Notice(text, 0);
+        }
+      }
+    });
     this.addCommand({
       id: "create-file",
       name: "Create code file",
