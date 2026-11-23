@@ -10,6 +10,9 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+    # Vault and plugin changes don't affect the site (Jekyll skips dot-folders).
+    paths-ignore:
+      - ".obsidian/**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

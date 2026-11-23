@@ -1,0 +1,10 @@
+{
+	"id": "cm-code-editor-fork",
+	"name": "CM Code Editor (fork)",
+	"version": "0.1.11-fork.1",
+	"minAppVersion": "1.13.0",
+	"description": "Fork of CM Code Editor: fits above the iOS keyboard and can open any text file.",
+	"author": "@gapmiss",
+	"authorUrl": "https://github.com/gapmiss",
+	"isDesktopOnly": false
+}

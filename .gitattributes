@@ -1,0 +1,2 @@
+# Built plugin bundles: collapsed in diffs and left out of language stats.
+.obsidian/plugins/*/main.js linguist-generated=true
