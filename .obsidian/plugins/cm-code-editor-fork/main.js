@@ -19056,15 +19056,10 @@ var CodeEditorView = class extends import_obsidian3.TextFileView {
     const onViewport = () => fit("viewport");
     vv.addEventListener("resize", onViewport);
     vv.addEventListener("scroll", onViewport);
-    this.registerDomEvent(window, "resize", () => fit("window"));
-    this.registerDomEvent(el, "focusin", () => window.setTimeout(() => fit("focus"), 50));
-    const observer = new ResizeObserver(() => fit("resize-observer"));
-    observer.observe(el);
     fit("open");
     this.register(() => {
       vv.removeEventListener("resize", onViewport);
       vv.removeEventListener("scroll", onViewport);
-      observer.disconnect();
     });
   }
   async onLoadFile(file) {
