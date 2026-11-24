@@ -21,6 +21,42 @@ declare module 'obsidian' {
 	}
 }
 
+// Tallest visual viewport seen at the current width, i.e. with no keyboard.
+// Shared by all editor views so a view opened with the keyboard up knows it.
+const keyboardBaseline = { width: 0, height: 0 };
+
+// Recent layout snapshots for the "Copy layout diagnostics" command.
+const layoutLog: string[] = [];
+
+function recordLayout(reason: string, el: HTMLElement, vv: VisualViewport, keyboardOpen: boolean, applied: number | null): void {
+	const px = (n: number) => Math.round(n);
+	const describe = (node: HTMLElement) => {
+		const r = node.getBoundingClientRect();
+		const cs = getComputedStyle(node);
+		const cls = (typeof node.className === 'string' ? node.className : '').split(' ').slice(0, 3).join('.');
+		return `${node.tagName.toLowerCase()}.${cls} top=${px(r.top)} bottom=${px(r.bottom)} h=${px(r.height)} css(h=${cs.height} pb=${cs.paddingBottom} mb=${cs.marginBottom} ov=${cs.overflowY})`;
+	};
+	const chain: string[] = [];
+	for (let node: HTMLElement | null = el, i = 0; node && i < 8; node = node.parentElement, i++) chain.push(describe(node));
+	const cm = el.querySelector<HTMLElement>('.cm-editor');
+	const body = activeDocument.body;
+	const lines = [
+		`[${new Date().toISOString().slice(11, 19)}] ${reason} keyboardOpen=${keyboardOpen} applied=${applied ?? 'none'}`,
+		`vv h=${px(vv.height)} top=${px(vv.offsetTop)} w=${px(vv.width)} baseline=${px(keyboardBaseline.height)} inner=${window.innerHeight} client=${activeDocument.documentElement.clientHeight} screen=${screen.width}x${screen.height}`,
+		`focus-in-editor=${el.contains(activeDocument.activeElement)} body=${body.className.split(' ').filter((c) => /keyboard|mobile|phone|tablet|ios/.test(c)).join(' ')} --keyboard-height=${getComputedStyle(body).getPropertyValue('--keyboard-height').trim() || 'unset'}`,
+		cm ? `cm-editor ${describe(cm)}` : 'cm-editor none',
+		...chain,
+	];
+	const entry = lines.join('\n');
+	if (layoutLog[layoutLog.length - 1]?.split('\n').slice(1).join('\n') === lines.slice(1).join('\n')) return;
+	layoutLog.push(entry);
+	if (layoutLog.length > 15) layoutLog.shift();
+}
+
+export function layoutDiagnostics(): string {
+	return layoutLog.length ? layoutLog.join('\n\n') : 'No layout recorded yet. Open a file in the code editor first.';
+}
+
 export class CodeEditorView extends TextFileView {
 	private editor: EditorView | null = null;
 	private compartments: EditorCompartments = createCompartments();
@@ -151,32 +187,41 @@ export class CodeEditorView extends TextFileView {
 	// iOS 27's keyboard leaves the view's height reduced twice (once by the
 	// keyboard, once more on top), squashing the editor. While the keyboard is
 	// up, size the view to end exactly at the keyboard's top edge instead.
+	//
+	// The keyboard is detected by the visual viewport being much shorter than
+	// the tallest it has been at this width. Comparing against
+	// window.innerHeight doesn't work when the web view itself shrinks with
+	// the keyboard.
 	private fitAboveKeyboard(): void {
 		const vv = window.visualViewport;
 		if (!vv) return;
 		const el = this.contentEl;
-		const fit = () => {
-			const visibleBottom = vv.offsetTop + vv.height;
-			const fullHeight = Math.max(window.innerHeight, activeDocument.documentElement.clientHeight);
-			const keyboardOpen = fullHeight - visibleBottom > 150;
-			el.toggleClass('code-editor-keyboard-open', keyboardOpen);
-			if (!keyboardOpen) {
-				el.setCssProps({ '--code-editor-visible-height': '' });
-				return;
+		const fit = (reason: string) => {
+			if (Math.abs(vv.width - keyboardBaseline.width) > 1) {
+				keyboardBaseline.width = vv.width; // rotated or resized: start over
+				keyboardBaseline.height = 0;
 			}
-			const height = Math.max(100, Math.floor(visibleBottom - el.getBoundingClientRect().top));
-			el.setCssProps({ '--code-editor-visible-height': `${height}px` });
+			keyboardBaseline.height = Math.max(keyboardBaseline.height, vv.height);
+			const visibleBottom = vv.offsetTop + vv.height;
+			const keyboardOpen = keyboardBaseline.height - vv.height > 150;
+			el.toggleClass('code-editor-keyboard-open', keyboardOpen);
+			let height: number | null = null;
+			if (keyboardOpen) {
+				height = Math.max(100, Math.floor(visibleBottom - el.getBoundingClientRect().top));
+				el.setCssProps({ '--code-editor-visible-height': `${height}px` });
+			} else {
+				el.setCssProps({ '--code-editor-visible-height': '' });
+			}
+			recordLayout(reason, el, vv, keyboardOpen, height);
 		};
-		vv.addEventListener('resize', fit);
-		vv.addEventListener('scroll', fit);
-		this.registerDomEvent(window, 'resize', fit);
-		this.registerDomEvent(el, 'focusin', () => window.setTimeout(fit, 50));
-		const observer = new ResizeObserver(() => fit());
-		observer.observe(el);
+		// iOS reports every keyboard show, hide and pan through these two events.
+		const onViewport = () => fit('viewport');
+		vv.addEventListener('resize', onViewport);
+		vv.addEventListener('scroll', onViewport);
+		fit('open');
 		this.register(() => {
-			vv.removeEventListener('resize', fit);
-			vv.removeEventListener('scroll', fit);
-			observer.disconnect();
+			vv.removeEventListener('resize', onViewport);
+			vv.removeEventListener('scroll', onViewport);
 		});
 	}
 

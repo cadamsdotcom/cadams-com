@@ -1,6 +1,6 @@
 > **Fork of [gapmiss/cm-code-editor](https://github.com/gapmiss/cm-code-editor) at 0.1.11 (`77c0f93`).**
 > Plugin id `cm-code-editor-fork`, so the community store never overwrites it. Changes:
-> - On iOS, the editor ends at the keyboard's top edge instead of being squashed (`fitAboveKeyboard` in `src/view.ts`).
+> - On iOS, the editor ends at the keyboard's top edge instead of being squashed (`fitAboveKeyboard` in `src/view.ts`). The keyboard is detected from the visual viewport shrinking below its tallest height, not from `window.innerHeight`, which shrinks too. **Copy layout diagnostics** copies recent layout snapshots for debugging this.
 > - "Open all text files" setting (on by default): any file Obsidian has no viewer for, including files with no extension, opens here if the whole file is valid UTF-8 text. Other encodings, binary files and files over 10 MB show a notice and are never saved (`claimUnhandledExtensions` in `src/main.ts`, `src/text-file.ts`).
 >
 > - Files keep their CRLF or LF line endings when saved (upstream rewrote CRLF as LF) (`detectLineEnding` in `src/text-file.ts`, `getViewData` in `src/view.ts`).

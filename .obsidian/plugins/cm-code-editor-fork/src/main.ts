@@ -1,7 +1,7 @@
 import { Notice, Plugin, TFile } from 'obsidian';
 import { CodeEditorSettingsTab, DEFAULT_SETTINGS } from './settings';
 import type { PluginSettings } from './settings';
-import { CodeEditorView, VIEW_TYPE } from './view';
+import { CodeEditorView, VIEW_TYPE, layoutDiagnostics } from './view';
 import { CreateCodeFileModal } from './create-modal';
 import { RenameFileModal } from './rename-modal';
 
@@ -32,6 +32,20 @@ export default class CodeEditorPlugin extends Plugin {
 		this.addSettingTab(new CodeEditorSettingsTab(this.app, this));
 
 		this.claimUnhandledExtensions();
+
+		this.addCommand({
+			id: 'copy-layout-diagnostics',
+			name: 'Copy layout diagnostics',
+			callback: async () => {
+				const text = layoutDiagnostics();
+				try {
+					await navigator.clipboard.writeText(text);
+					new Notice('Layout diagnostics copied to the clipboard.');
+				} catch {
+					new Notice(text, 0);
+				}
+			},
+		});
 
 		this.addCommand({
 			id: 'create-file',
